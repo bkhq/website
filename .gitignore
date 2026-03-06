@@ -1,0 +1,65 @@
+# dependencies
+node_modules/
+
+# build output
+dist
+out
+*.tgz
+apps/api/dist/
+apps/api/src/*.d.ts
+apps/api/src/*.d.ts.map
+apps/api/src/*.js
+
+# coverage
+coverage
+*.lcov
+.nyc_output
+
+# logs
+logs
+*.log
+*.log*
+
+# runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# TypeScript
+*.tsbuildinfo
+
+# caches
+.cache
+.eslintcache
+.stylelintcache
+
+# dotenv
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# OS
+.DS_Store
+
+# IDEs
+.idea
+.vscode
+
+# Claude Code
+.claude.json
+.claude/
+
+# Astro
+.astro/
+
+# Cloudflare
+.wrangler/
+
+# core dumps
+core
+
+# temp
+tmp/

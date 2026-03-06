@@ -1,0 +1,23 @@
+---
+// Root index redirects to locale-prefixed route based on stored preference or browser language
+---
+
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script is:inline>
+      ;(function () {
+        var saved = localStorage.getItem('bitk-locale')
+        var locale =
+          saved === 'en' || saved === 'zh'
+            ? saved
+            : navigator.language.startsWith('zh')
+              ? 'zh'
+              : 'en'
+        window.location.replace('/' + locale + '/')
+      })()
+    </script>
+    <meta http-equiv="refresh" content="0;url=/en/" />
+  </head>
+  <body></body>
+</html>

@@ -1,0 +1,24 @@
+---
+import { getTranslations } from '@/i18n'
+import type { Locale } from '@/i18n'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const t = getTranslations(locale)
+---
+
+<footer class="relative z-10 mt-8 pb-10 text-sm text-muted-foreground/70">
+  <div class="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col items-center gap-3 pt-6 text-center sm:flex-row sm:justify-between sm:text-left">
+      <div class="flex flex-wrap items-center justify-center gap-5 sm:justify-start">
+        <a href={`/${locale}/privacy`} class="transition-colors hover:text-foreground">{t.footer.privacy}</a>
+        <a href={`/${locale}/terms`} class="transition-colors hover:text-foreground">{t.footer.terms}</a>
+        <a href={`/${locale}/submit`} class="transition-colors hover:text-foreground">{t.footer.submit}</a>
+      </div>
+      <p class="whitespace-nowrap">{t.footer.copyright}</p>
+    </div>
+  </div>
+</footer>

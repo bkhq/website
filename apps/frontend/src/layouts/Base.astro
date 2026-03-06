@@ -1,0 +1,67 @@
+---
+import '@/styles/global.css'
+import Header from '@/components/Header.astro'
+import Footer from '@/components/Footer.astro'
+
+interface Props {
+  title?: string
+  description?: string
+  locale: 'en' | 'zh'
+  noindex?: boolean
+}
+
+const { title = 'BK', description, locale, noindex = false } = Astro.props
+const siteName = 'BK'
+const siteUrl = Astro.site ?? 'https://bk.io'
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl)
+const altLocale = locale === 'en' ? 'zh' : 'en'
+const altUrl = new URL(
+  Astro.url.pathname.replace(`/${locale}`, `/${altLocale}`),
+  canonicalUrl,
+)
+const fullTitle = title === siteName ? siteName : `${title} - ${siteName}`
+---
+
+<!doctype html>
+<html lang={locale === 'zh' ? 'zh-CN' : 'en'}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <link rel="canonical" href={canonicalUrl.href} />
+    <link rel="alternate" hreflang={altLocale} href={altUrl.href} />
+    <link rel="alternate" hreflang={locale} href={canonicalUrl.href} />
+    <link rel="alternate" hreflang="x-default" href={new URL('/en/', siteUrl).href} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <title>{fullTitle}</title>
+    {description && <meta name="description" content={description} />}
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl.href} />
+    <meta property="og:locale" content={locale === 'zh' ? 'zh_CN' : 'en_US'} />
+    <meta property="og:locale:alternate" content={locale === 'zh' ? 'en_US' : 'zh_CN'} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    <script is:inline>
+      ;(function () {
+        var t = localStorage.getItem('bitk-theme')
+        var dark =
+          t === 'dark' ||
+          (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches)
+        if (dark) document.documentElement.classList.add('dark')
+      })()
+    </script>
+  </head>
+  <body>
+    <main class="relative min-h-screen overflow-x-clip">
+      <Header locale={locale} />
+
+      <slot />
+
+      <Footer locale={locale} />
+    </main>
+  </body>
+</html>

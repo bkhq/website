@@ -1,0 +1,358 @@
+---
+import Base from '@/layouts/Base.astro'
+import { getTranslations } from '@/i18n'
+import type { Locale } from '@/i18n'
+import { renderMarkdown } from '@/lib/content'
+
+export function getStaticPaths() {
+  return [{ params: { locale: 'en' } }, { params: { locale: 'zh' } }]
+}
+
+const locale = Astro.params.locale as Locale
+const t = getTranslations(locale)
+
+const content: Record<Locale, string> = {
+  en: `
+## How It Works
+
+This site hosts tools, articles, guides, resources, and more — all managed under the \`content/\` directory. Just add files and open a PR — no code changes required.
+
+- **Repository**: [bkhq/website](https://github.com/bkhq/website)
+- **Content directory**: \`content/<your-slug>/\`
+- **Submit method**: GitHub Pull Request
+
+## Quick Start
+
+\`\`\`bash
+# 1. Fork the repo on GitHub
+#    Go to https://github.com/bkhq/website → click "Fork"
+
+# 2. Clone your fork
+git clone https://github.com/<your-username>/website.git
+cd website
+
+# 3. Create your content directory
+mkdir -p content/my-project
+
+# 4. Add meta.json (see format below)
+# 5. Register in content/list.json
+
+# 6. Commit and push
+git add .
+git commit -m "feat: add my-project"
+git push origin main
+
+# 7. Open a Pull Request on GitHub
+\`\`\`
+
+## File Structure
+
+\`\`\`
+content/
+├── list.json                  # Registry — list of all entries
+└── my-project/
+    ├── meta.json              # Required — metadata
+    ├── logo.svg               # Optional — custom icon
+    ├── index.md               # Optional — introduction
+    ├── usage.md               # Optional — usage guide
+    └── configuration.md       # Optional — configuration
+\`\`\`
+
+---
+
+## \`meta.json\`
+
+The only required file. At minimum:
+
+\`\`\`json
+{
+  "title": { "en": "My Project", "zh": "我的项目" },
+  "description": {
+    "en": "A short description of what this is about.",
+    "zh": "简要描述这是什么。"
+  }
+}
+\`\`\`
+
+### Full example with all optional fields
+
+\`\`\`json
+{
+  "title": { "en": "My Project", "zh": "我的项目" },
+  "description": {
+    "en": "A short description of what this is about.",
+    "zh": "简要描述这是什么。"
+  },
+  "version": "1.0.0",
+  "website": "https://example.com",
+  "github": "https://github.com/user/repo",
+  "addedAt": "2026-03-07",
+  "addedBy": { "name": "Your Name", "url": "https://github.com/yourname" },
+  "links": [
+    {
+      "label": { "en": "Documentation", "zh": "文档" },
+      "url": "https://example.com/docs"
+    }
+  ]
+}
+\`\`\`
+
+### Field Reference
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| \`title\` | **Yes** | Name in \`en\` and \`zh\` |
+| \`description\` | **Yes** | Short description in \`en\` and \`zh\` |
+| \`version\` | No | Version string |
+| \`website\` | No | Official website URL |
+| \`github\` | No | GitHub repository URL |
+| \`addedAt\` | No | Date added (\`YYYY-MM-DD\`) |
+| \`addedBy\` | No | Contributor \`name\` and optional profile \`url\` |
+| \`links\` | No | Extra links with i18n \`label\` and \`url\` |
+
+---
+
+## \`list.json\` (Entry Registry)
+
+Register your entry by adding to the \`list\` array in \`content/list.json\`:
+
+\`\`\`json
+{
+  "slug": "my-project",
+  "category": "textCode"
+}
+\`\`\`
+
+### Field Reference
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| \`slug\` | **Yes** | Must match your directory name under \`content/\` |
+| \`category\` | **Yes** | One of: \`images\` \`textCode\` \`colors\` \`converters\` \`security\` \`network\` \`data\` |
+| \`order\` | No | Display position (higher = further down). Omit to append at the end |
+| \`logo\` | No | A \`logo.svg\` in your directory, or a [Lucide](https://lucide.dev) icon name. Omit to use the first letter of the title |
+
+---
+
+## Adding Pages
+
+Optionally add \`.md\` files alongside \`meta.json\`. Each file becomes a page with its own URL.
+
+Use frontmatter to set the title and sort order:
+
+\`\`\`markdown
+---
+title:
+  en: Usage Guide
+  zh: 使用指南
+order: 1
+---
+
+Your content here...
+\`\`\`
+
+When there are multiple \`.md\` files, a sidebar navigation is generated automatically. \`order\` controls the position (lower = higher).
+
+---
+
+`,
+  zh: `
+## 如何投稿
+
+本站收录工具、文章、教程、资源等各类内容，全部在 \`content/\` 目录下管理。只需添加文件并发起 PR，无需修改任何代码。
+
+- **仓库地址**：[bkhq/website](https://github.com/bkhq/website)
+- **内容目录**：\`content/<your-slug>/\`
+- **提交方式**：GitHub Pull Request
+
+## 快速开始
+
+\`\`\`bash
+# 1. 在 GitHub 上 Fork 仓库
+#    打开 https://github.com/bkhq/website → 点击 "Fork"
+
+# 2. 克隆你的 Fork
+git clone https://github.com/<your-username>/website.git
+cd website
+
+# 3. 创建内容目录
+mkdir -p content/my-project
+
+# 4. 添加 meta.json（格式见下方）
+# 5. 在 content/list.json 中注册
+
+# 6. 提交并推送
+git add .
+git commit -m "feat: add my-project"
+git push origin main
+
+# 7. 在 GitHub 上发起 Pull Request
+\`\`\`
+
+## 文件结构
+
+\`\`\`
+content/
+├── list.json                  # 注册表 — 所有条目的索引
+└── my-project/
+    ├── meta.json              # 必需 — 元信息
+    ├── logo.svg               # 可选 — 自定义图标
+    ├── index.md               # 可选 — 介绍
+    ├── usage.md               # 可选 — 使用指南
+    └── configuration.md       # 可选 — 配置说明
+\`\`\`
+
+---
+
+## \`meta.json\`
+
+唯一必需的文件。最简配置：
+
+\`\`\`json
+{
+  "title": { "en": "My Project", "zh": "我的项目" },
+  "description": {
+    "en": "A short description of what this is about.",
+    "zh": "简要描述这是什么。"
+  }
+}
+\`\`\`
+
+### 包含所有可选字段的完整示例
+
+\`\`\`json
+{
+  "title": { "en": "My Project", "zh": "我的项目" },
+  "description": {
+    "en": "A short description of what this is about.",
+    "zh": "简要描述这是什么。"
+  },
+  "version": "1.0.0",
+  "website": "https://example.com",
+  "github": "https://github.com/user/repo",
+  "addedAt": "2026-03-07",
+  "addedBy": { "name": "Your Name", "url": "https://github.com/yourname" },
+  "links": [
+    {
+      "label": { "en": "Documentation", "zh": "文档" },
+      "url": "https://example.com/docs"
+    }
+  ]
+}
+\`\`\`
+
+### 字段说明
+
+| 字段 | 必填 | 说明 |
+|------|------|------|
+| \`title\` | **是** | 名称，需包含 \`en\` 和 \`zh\` |
+| \`description\` | **是** | 简要描述，需包含 \`en\` 和 \`zh\` |
+| \`version\` | 否 | 版本号 |
+| \`website\` | 否 | 官方网站链接 |
+| \`github\` | 否 | GitHub 仓库链接 |
+| \`addedAt\` | 否 | 添加日期（\`YYYY-MM-DD\`） |
+| \`addedBy\` | 否 | 贡献者 \`name\` 及可选的 \`url\` |
+| \`links\` | 否 | 附加链接，含双语 \`label\` 和 \`url\` |
+
+---
+
+## \`list.json\`（内容注册表）
+
+在 \`content/list.json\` 的 \`list\` 数组中添加一条注册信息：
+
+\`\`\`json
+{
+  "slug": "my-project",
+  "category": "textCode"
+}
+\`\`\`
+
+### 字段说明
+
+| 字段 | 必填 | 说明 |
+|------|------|------|
+| \`slug\` | **是** | 需与 \`content/\` 下的目录名一致 |
+| \`category\` | **是** | 可选值：\`images\` \`textCode\` \`colors\` \`converters\` \`security\` \`network\` \`data\` |
+| \`order\` | 否 | 显示顺序（数值越大越靠后），不填则自动排到末尾 |
+| \`logo\` | 否 | 目录中的 \`logo.svg\`，或 [Lucide](https://lucide.dev) 图标名。不填则使用标题首字母 |
+
+---
+
+## 添加页面
+
+可以在 \`meta.json\` 旁放置 \`.md\` 文件，每个文件会生成独立页面。
+
+使用 frontmatter 设置标题和排序：
+
+\`\`\`markdown
+---
+title:
+  en: Usage Guide
+  zh: 使用指南
+order: 1
+---
+
+你的内容...
+\`\`\`
+
+当有多个 \`.md\` 文件时，侧边栏导航会自动生成。\`order\` 控制排列顺序（数值越小越靠前）。
+
+---
+
+`,
+}
+
+const htmlContent = await renderMarkdown(content[locale])
+---
+
+<Base title={t.submit.title} description={t.submit.description} locale={locale}>
+  <section class="relative z-10">
+    <div class="mx-auto w-full max-w-5xl px-4 pb-14 pt-8 sm:px-6 sm:pt-10 lg:px-8">
+      <div class="pb-8 text-center">
+        <h1 class="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+          {t.submit.title}
+        </h1>
+      </div>
+
+      <div class="flex items-start justify-center">
+        <article class="prose-article rounded-xl bg-white p-6 shadow-sm dark:bg-white/[0.03] sm:p-8" set:html={htmlContent} />
+      </div>
+
+      <div class="flex flex-col items-center gap-3 pt-10 pb-2 text-center">
+        <p class="text-lg font-medium text-foreground">
+          {locale === 'zh' ? '准备好了？' : 'Ready?'}
+        </p>
+        <a
+          href="https://github.com/bkhq/website/compare"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 rounded-lg bg-foreground px-6 py-2.5 text-sm font-medium text-background shadow-md transition-opacity hover:opacity-90"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          {locale === 'zh' ? '发起 Pull Request' : 'Open a Pull Request'}
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script is:inline>
+  document.querySelectorAll('.code-block[data-code]').forEach(function(block) {
+    var btn = document.createElement('button')
+    btn.className = 'code-copy-btn'
+    btn.setAttribute('aria-label', 'Copy code')
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+    btn.addEventListener('click', function() {
+      var code = block.getAttribute('data-code') || ''
+      navigator.clipboard.writeText(code).then(function() {
+        btn.classList.add('copied')
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
+        setTimeout(function() {
+          btn.classList.remove('copied')
+          btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+        }, 2000)
+      })
+    })
+    block.appendChild(btn)
+  })
+</script>

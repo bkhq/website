@@ -1,0 +1,17 @@
+{
+  "categories": [
+    { "key": "images", "en": "Images", "zh": "图片", "badge": { "en": "Images", "zh": "图片" } },
+    { "key": "textCode", "en": "Text & Code", "zh": "文本 & 代码", "badge": { "en": "Text & Code", "zh": "文本 & 代码" } },
+    { "key": "colors", "en": "Colors", "zh": "颜色", "badge": { "en": "Colors", "zh": "颜色" } },
+    { "key": "converters", "en": "Converters", "zh": "转换器", "badge": { "en": "Converters", "zh": "转换器" } }
+  ],
+  "featured": ["demo"],
+  "list": [
+    {
+      "slug": "demo",
+      "category": "images",
+      "logo": "logo.svg",
+      "order": 1
+    }
+  ]
+}

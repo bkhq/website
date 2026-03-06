@@ -1,0 +1,32 @@
+{
+  "name": "bitk-web",
+  "private": true,
+  "type": "module",
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ],
+    "catalog": {
+      "typescript": "^5.9.3",
+      "zod": "^4.3.6"
+    }
+  },
+  "scripts": {
+    "dev": "bun --filter @bitk-web/frontend dev",
+    "build": "bun run build:api && bun run build:frontend",
+    "build:api": "bun --filter @bitk-web/api tsc",
+    "build:frontend": "bun --filter @bitk-web/frontend build",
+    "deploy": "bun run build && wrangler deploy",
+    "test": "bun --parallel --filter '*' test",
+    "lint": "biome check .",
+    "lint:fix": "biome check . --fix",
+    "format": "biome format . --write"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.4",
+    "@bitk-web/tsconfig": "workspace:*",
+    "typescript": "catalog:",
+    "wrangler": "^4.71.0"
+  }
+}
