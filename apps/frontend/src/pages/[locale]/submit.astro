@@ -318,7 +318,7 @@ const htmlContent = await renderMarkdown(content[locale])
         <article class="prose-article rounded-xl bg-white p-6 shadow-sm dark:bg-white/[0.03] sm:p-8" set:html={htmlContent} />
       </div>
 
-      <div class="flex flex-col items-center gap-3 pt-10 pb-2 text-center">
+      <div class="flex flex-col items-center gap-3 pt-8 text-center">
         <p class="text-lg font-medium text-foreground">
           {locale === 'zh' ? '准备好了？' : 'Ready?'}
         </p>
