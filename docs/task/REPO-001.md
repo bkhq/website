@@ -4,7 +4,7 @@
 
 按用户要求完成以下改动：
 - 删除当前仓库 Git 历史并重新初始化
-- 项目名修改为 `bitk-web`
+- 项目名修改为 `bkio`
 - Cloudflare Workers 名称修改为 `bk-io`
 
 ## Status

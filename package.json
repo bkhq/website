@@ -1,5 +1,5 @@
 {
-  "name": "bitk-web",
+  "name": "bkio",
   "private": true,
   "type": "module",
   "workspaces": {
@@ -13,10 +13,10 @@
     }
   },
   "scripts": {
-    "dev": "bun --filter @bitk-web/frontend dev",
+    "dev": "bun --filter @bkio/frontend dev",
     "build": "bun run build:api && bun run build:frontend",
-    "build:api": "bun --filter @bitk-web/api tsc",
-    "build:frontend": "bun --filter @bitk-web/frontend build",
+    "build:api": "bun --filter @bkio/api tsc",
+    "build:frontend": "bun --filter @bkio/frontend build",
     "deploy": "bun run build && wrangler deploy",
     "test": "bun --parallel --filter '*' test",
     "lint": "biome check .",
@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.4",
-    "@bitk-web/tsconfig": "workspace:*",
+    "@bkio/tsconfig": "workspace:*",
     "typescript": "catalog:",
     "wrangler": "^4.71.0"
   }

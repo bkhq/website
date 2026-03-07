@@ -1,5 +1,5 @@
 {
-  "extends": "@bitk-web/tsconfig/utils.json",
+  "extends": "@bkio/tsconfig/utils.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {}

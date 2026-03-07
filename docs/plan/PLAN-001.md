@@ -13,8 +13,8 @@ completed
 
 ## Proposal
 
-- 将根项目名改为 `bitk-web`
-- 将内部 workspace 包前缀统一改为 `@bitk-web/*`
+- 将根项目名改为 `bkio`
+- 将内部 workspace 包前缀统一改为 `@bkio/*`
 - 将 `wrangler.toml` 中的 Worker 名称改为 `bk-io`
 - 同步 README、CLAUDE、docs 标题中的旧项目名
 - 最后删除 `.git` 并执行 `git init`

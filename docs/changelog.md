@@ -11,8 +11,8 @@ Project initialized with monorepo template:
 
 ## 2026-03-07 03:45 [decision]
 
-Renamed the project identity from `template-bun-cloudflare` to `bitk-web`.
-Updated all workspace package names and TypeScript references to `@bitk-web/*`.
+Renamed the project identity from `template-bun-cloudflare` to `bkio`.
+Updated all workspace package names and TypeScript references to `@bkio/*`.
 Changed the Cloudflare Workers name in `wrangler.toml` to `bk-io`.
 Removed the existing `.git` history and reinitialized the repository on branch `main`.
 

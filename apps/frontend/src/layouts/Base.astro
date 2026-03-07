@@ -48,7 +48,7 @@ const fullTitle = title === siteName ? siteName : `${title} - ${siteName}`
     {description && <meta name="twitter:description" content={description} />}
     <script is:inline>
       ;(function () {
-        var t = localStorage.getItem('bitk-theme')
+        var t = localStorage.getItem('bkio-theme')
         var dark =
           t === 'dark' ||
           (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches)
@@ -58,7 +58,7 @@ const fullTitle = title === siteName ? siteName : `${title} - ${siteName}`
     {detectLocale && (
       <script is:inline>
         ;(function () {
-          var saved = localStorage.getItem('bitk-locale')
+          var saved = localStorage.getItem('bkio-locale')
           var locale = saved === 'zh' ? 'zh' : (saved === 'en' ? null : (navigator.language.startsWith('zh') ? 'zh' : null))
           if (locale === 'zh') window.location.replace('/zh/')
         })()

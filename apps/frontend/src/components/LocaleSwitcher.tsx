@@ -9,7 +9,7 @@ import {
 
 type Locale = 'en' | 'zh'
 
-const STORAGE_KEY = 'bitk-locale'
+const STORAGE_KEY = 'bkio-locale'
 
 const localeOptions: { value: Locale; label: string }[] = [
   { value: 'en', label: 'English' },

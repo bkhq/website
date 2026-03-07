@@ -12,7 +12,7 @@ export function getTranslations(locale: Locale): Translations {
 
 export function detectLocale(): Locale {
   if (typeof document !== 'undefined') {
-    const saved = localStorage.getItem('bitk-locale')
+    const saved = localStorage.getItem('bkio-locale')
     if (saved === 'en' || saved === 'zh') return saved
     return navigator.language.startsWith('zh') ? 'zh' : 'en'
   }

@@ -1,12 +1,12 @@
 {
-  "extends": "@bitk-web/tsconfig/workers.json",
+  "extends": "@bkio/tsconfig/workers.json",
   "compilerOptions": {
     "baseUrl": ".",
     "rootDir": "src",
     "outDir": "dist",
     "paths": {
       "@/*": ["src/*"],
-      "@bitk-web/shared": ["../../packages/shared/src/index.ts"]
+      "@bkio/shared": ["../../packages/shared/src/index.ts"]
     }
   },
   "include": ["src/**/*.ts"],

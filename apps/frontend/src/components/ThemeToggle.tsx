@@ -9,7 +9,7 @@ import {
 
 type Theme = 'light' | 'dark'
 
-const STORAGE_KEY = 'bitk-theme'
+const STORAGE_KEY = 'bkio-theme'
 
 function getSystemTheme(): Theme {
   return window.matchMedia('(prefers-color-scheme: dark)').matches

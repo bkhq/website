@@ -2,7 +2,7 @@
 
 ## Project
 
-bitk-web — Monorepo template for Bun + Hono + Vite + React + Cloudflare Workers.
+bkio — Monorepo template for Bun + Hono + Vite + React + Cloudflare Workers.
 
 ## Commands
 

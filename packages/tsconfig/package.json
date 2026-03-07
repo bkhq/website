@@ -1,5 +1,5 @@
 {
-  "name": "@bitk-web/tsconfig",
+  "name": "@bkio/tsconfig",
   "version": "0.0.1",
   "private": true,
   "description": "Shared TypeScript configuration for the workspace."
