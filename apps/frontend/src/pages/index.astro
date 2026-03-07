@@ -33,7 +33,7 @@ const categories = toolsData.categories.map((cat) => ({
 }))
 ---
 
-<Base title={t.hero.title} description={t.hero.subtitle} locale={locale}>
+<Base title={t.hero.title} description={t.hero.subtitle} locale={locale} detectLocale>
   <section class="relative z-10">
     <div class="mx-auto flex w-full max-w-5xl flex-col items-center px-4 pb-8 pt-8 text-center sm:px-6 sm:pt-10 lg:px-8">
       <h1 class="max-w-4xl text-4xl font-semibold tracking-[-0.05em] text-foreground sm:text-5xl lg:text-6xl">
@@ -60,11 +60,3 @@ const categories = toolsData.categories.map((cat) => ({
     </div>
   </section>
 </Base>
-
-<script is:inline>
-  ;(function () {
-    var saved = localStorage.getItem('bitk-locale')
-    var locale = saved === 'zh' ? 'zh' : (saved === 'en' ? null : (navigator.language.startsWith('zh') ? 'zh' : null))
-    if (locale === 'zh') window.location.replace('/zh/')
-  })()
-</script>

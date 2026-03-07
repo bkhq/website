@@ -1,16 +1,17 @@
 ---
 import '@/styles/global.css'
-import Header from '@/components/Header.astro'
-import Footer from '@/components/Footer.astro'
+import { Header } from '@/components/Header'
+import { Footer } from '@/components/Footer'
 
 interface Props {
   title?: string
   description?: string
   locale: 'en' | 'zh'
   noindex?: boolean
+  detectLocale?: boolean
 }
 
-const { title = 'BK', description, locale, noindex = false } = Astro.props
+const { title = 'BK', description, locale, noindex = false, detectLocale = false } = Astro.props
 const siteName = 'BK'
 const siteUrl = Astro.site ?? 'https://bk.io'
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl)
@@ -54,14 +55,23 @@ const fullTitle = title === siteName ? siteName : `${title} - ${siteName}`
         if (dark) document.documentElement.classList.add('dark')
       })()
     </script>
+    {detectLocale && (
+      <script is:inline>
+        ;(function () {
+          var saved = localStorage.getItem('bitk-locale')
+          var locale = saved === 'zh' ? 'zh' : (saved === 'en' ? null : (navigator.language.startsWith('zh') ? 'zh' : null))
+          if (locale === 'zh') window.location.replace('/zh/')
+        })()
+      </script>
+    )}
   </head>
   <body>
     <main class="relative min-h-screen overflow-x-clip">
-      <Header locale={locale} />
+      <Header locale={locale} client:load />
 
       <slot />
 
-      <Footer locale={locale} />
+      <Footer locale={locale} client:load />
     </main>
   </body>
 </html>

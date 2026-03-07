@@ -1,63 +1,38 @@
-# bitk-web
+# BK.io
 
-Monorepo template for full-stack web applications using Bun, Hono, Vite, and Cloudflare Workers.
+A curated content collection website for tools, articles, guides, and resources.
 
-## Stack
+精选内容集合网站，收录工具、文章、教程和资源。
 
-- **Runtime**: [Bun](https://bun.sh) (workspaces)
-- **API**: [Hono](https://hono.dev) on [Cloudflare Workers](https://workers.cloudflare.com)
-- **Frontend**: [Vite](https://vite.dev) + [React 19](https://react.dev) + [Tailwind CSS v4](https://tailwindcss.com)
-- **UI**: [shadcn/ui](https://ui.shadcn.com) (base-nova) + [Base UI](https://base-ui.com)
-- **Tooling**: [Biome](https://biomejs.dev) (lint/format), [TypeScript](https://www.typescriptlang.org), [Vitest](https://vitest.dev)
-- **Deploy**: Single Cloudflare Worker (API + static assets)
+**Website**: [bk.io](https://bk.io)
 
-## Structure
+## Contributing / 投稿
 
-```
-apps/
-  api/          Hono API (Cloudflare Workers)
-  frontend/     Vite + React SPA
-packages/
-  shared/       Shared utilities
-  tsconfig/     Shared TypeScript configs
-```
+We welcome contributions! You can submit tools, articles, guides, and other resources via GitHub Pull Request.
 
-## Getting Started
+欢迎投稿！你可以通过 GitHub Pull Request 提交工具、文章、教程等各类内容。
 
-```bash
-bun install
-bun run dev
-```
+- [Submit Guide (English)](https://bk.io/en/submit)
+- [投稿指南 (中文)](https://bk.io/zh/submit)
 
-Open http://localhost:3000 - both frontend and API are served by Vite via `@hono/vite-dev-server`.
+### Quick Submit / 快速提交
 
-## Scripts
+Just open an [Issue](https://github.com/bkhq/website/issues/new?template=quick-submit.yml) with the tool URL — AI will automatically collect and organize the content.
 
-| Command | Description |
-|---------|-------------|
-| `bun run dev` | Start dev server (frontend + API) |
-| `bun run build` | Type-check API + build frontend |
-| `bun run build:api` | Type-check API |
-| `bun run build:frontend` | Build frontend |
-| `bun run deploy` | Build and deploy to Cloudflare |
-| `bun run test` | Run all tests |
-| `bun run lint` | Lint with Biome |
-| `bun run format` | Format with Biome |
+只需提交一个 [Issue](https://github.com/bkhq/website/issues/new?template=quick-submit.yml)，附上工具网址，AI 会自动收集并整理内容。
 
-## Deploy
+### Manual Submit / 手动提交
 
-### Manual
+1. Fork this repo / Fork 本仓库
+2. Create `content/<your-slug>/meta.json` / 创建 `content/<your-slug>/meta.json`
+3. Register in `content/list.json` / 在 `content/list.json` 中注册
+4. Open a Pull Request / 发起 Pull Request
 
-```bash
-bun run deploy
-```
+## Stack / 技术栈
 
-### GitHub Actions
-
-1. Add secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
-2. Optionally set variable: `WORKER_NAME` (defaults to `name` in `wrangler.toml`)
-3. Trigger the **Deploy** workflow manually
+- **Frontend**: [Astro](https://astro.build) + [React](https://react.dev) + [Tailwind CSS v4](https://tailwindcss.com)
+- **Deploy**: Cloudflare Workers
 
 ## License
 
-MIT
+Apache-2.0

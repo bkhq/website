@@ -1,0 +1,38 @@
+name: Quick Submit / 快速提交
+description: Submit a tool or resource URL — AI will collect the info automatically. / 提交工具或资源网址，AI 自动收集信息。
+title: "[Submit] "
+labels: ["submit"]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: URL / 网址
+      description: The official website or GitHub URL of the tool. / 工具的官方网站或 GitHub 地址。
+      placeholder: "https://example.com"
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category / 分类 (optional / 可选)
+      description: Choose the most fitting category, or leave blank for auto-detection. / 选择最合适的分类，留空则自动识别。
+      options:
+        - ""
+        - images
+        - textCode
+        - colors
+        - converters
+        - security
+        - network
+        - data
+        - other
+    validations:
+      required: false
+  - type: textarea
+    id: description
+    attributes:
+      label: Description / 描述 (optional / 可选)
+      description: Brief description or why you recommend it. / 简要描述或推荐理由。
+      placeholder: "A great tool for..."
+    validations:
+      required: false

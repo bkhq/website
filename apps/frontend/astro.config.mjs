@@ -5,11 +5,7 @@ import { defineConfig } from 'astro/config'
 export default defineConfig({
   output: 'static',
   integrations: [react()],
-  i18n: {
-    defaultLocale: 'en',
-    locales: ['en', 'zh'],
-    routing: { prefixDefaultLocale: true },
-  },
+  // i18n routing handled manually via [locale]/ pages + root index.astro
   vite: {
     plugins: [tailwindcss()],
     resolve: {
