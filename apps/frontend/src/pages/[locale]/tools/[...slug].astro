@@ -50,9 +50,9 @@ const categoryLabel = toolEntry ? getToolBadge(toolsData, toolEntry.category, lo
 const toolTags = toolEntry ? getToolTags(toolsData, toolEntry.tags ?? [], locale) : []
 
 const meta = getToolMeta(toolSlug)
-const { data: frontmatter, html: htmlContent } = await getToolDoc(toolSlug, docSlug)
+const { data: frontmatter, html: htmlContent } = await getToolDoc(toolSlug, docSlug, locale)
 
-const allDocs = await getToolDocs(toolSlug)
+const allDocs = await getToolDocs(toolSlug, locale)
 const sidebarDocs = allDocs
   .map((doc) => ({
     slug: doc.slug,

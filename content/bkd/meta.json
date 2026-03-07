@@ -1,0 +1,20 @@
+{
+  "title": { "en": "BKD", "zh": "BKD" },
+  "description": {
+    "en": "AI-powered Kanban board for coding agents. Create issues, assign them to Claude Code, Codex, or Gemini CLI, and watch them work in real time — with diff viewer, web terminal, and multi-turn chat.",
+    "zh": "AI 驱动的看板应用，专为编程代理设计。创建任务、分配给 Claude Code、Codex 或 Gemini CLI，实时查看工作进度——内置 diff 查看器、Web 终端和多轮对话。"
+  },
+  "github": "https://github.com/bkhq/bkd",
+  "addedAt": "2026-03-07",
+  "addedBy": { "name": "bkhq", "url": "https://github.com/bkhq" },
+  "links": [
+    {
+      "label": { "en": "Releases", "zh": "版本发布" },
+      "url": "https://github.com/bkhq/bkd/releases"
+    },
+    {
+      "label": { "en": "Report Issue", "zh": "报告问题" },
+      "url": "https://github.com/bkhq/bkd/issues"
+    }
+  ]
+}
