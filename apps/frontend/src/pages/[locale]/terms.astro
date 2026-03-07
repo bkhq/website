@@ -1,0 +1,104 @@
+---
+import Base from '@/layouts/Base.astro'
+import { getTranslations } from '@/i18n'
+import type { Locale } from '@/i18n'
+import { renderMarkdown } from '@/lib/content'
+
+export function getStaticPaths() {
+  return [{ params: { locale: 'en' } }, { params: { locale: 'zh' } }]
+}
+
+const locale = Astro.params.locale as Locale
+const t = getTranslations(locale)
+
+const content: Record<Locale, string> = {
+  en: `
+## Acceptance of Terms
+
+By accessing and using this website ("BK.io"), you agree to be bound by these Terms of Service. If you do not agree, please do not use this site.
+
+## Description of Service
+
+BK.io is a directory of tools and resources for developers. We provide links, descriptions, and guides for third-party tools. We do not host or operate the tools listed on this site.
+
+## User Content
+
+By submitting content (via Pull Requests or Issues), you grant us a non-exclusive, royalty-free license to display and distribute the content on this site. You represent that you have the right to submit such content.
+
+## Disclaimer
+
+This site and its content are provided "as is" without warranties of any kind, either express or implied. We do not guarantee the accuracy, completeness, or usefulness of any information on the site.
+
+## Third-Party Links
+
+This site links to third-party websites and tools. We are not responsible for the content, availability, or practices of those sites. Use them at your own risk.
+
+## Limitation of Liability
+
+In no event shall BK.io or its contributors be liable for any damages arising from the use or inability to use this site or the tools listed on it.
+
+## Changes to Terms
+
+We reserve the right to modify these terms at any time. Changes take effect immediately upon posting. Continued use of the site constitutes acceptance of the updated terms.
+
+## Contact
+
+If you have questions about these Terms of Service, please open an issue on our [GitHub repository](https://github.com/bkhq/website).
+
+*Last updated: 2026-03-07*
+`,
+  zh: `
+## 条款接受
+
+访问和使用本网站（"BK.io"）即表示您同意受本服务条款的约束。如果您不同意，请勿使用本站。
+
+## 服务描述
+
+BK.io 是一个面向开发者的工具和资源目录。我们提供第三方工具的链接、描述和指南。我们不托管或运营本站列出的工具。
+
+## 用户内容
+
+通过提交内容（通过 Pull Request 或 Issue），您授予我们非独占、免版税的许可，允许我们在本站展示和分发该内容。您保证您有权提交此类内容。
+
+## 免责声明
+
+本站及其内容按"原样"提供，不作任何明示或暗示的保证。我们不保证本站信息的准确性、完整性或实用性。
+
+## 第三方链接
+
+本站链接到第三方网站和工具。我们不对这些网站的内容、可用性或做法负责。使用这些链接的风险由您自行承担。
+
+## 责任限制
+
+在任何情况下，BK.io 或其贡献者均不对因使用或无法使用本站或本站列出的工具而产生的任何损害承担责任。
+
+## 条款变更
+
+我们保留随时修改这些条款的权利。变更在发布后立即生效。继续使用本站即表示接受更新后的条款。
+
+## 联系方式
+
+如果您对本服务条款有任何疑问，请在我们的 [GitHub 仓库](https://github.com/bkhq/website) 上提交 Issue。
+
+*最后更新：2026-03-07*
+`,
+}
+
+const htmlContent = await renderMarkdown(content[locale])
+---
+
+<Base title={t.footer.terms} locale={locale}>
+  <section class="relative z-10">
+    <div class="mx-auto w-full max-w-5xl px-4 pb-14 pt-8 sm:px-6 sm:pt-10 lg:px-8">
+      <div class="pb-8 text-center">
+        <h1 class="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+          {t.footer.terms}
+        </h1>
+      </div>
+
+      <div class="flex items-start justify-center">
+        <article class="prose-article rounded-xl bg-white p-6 shadow-sm dark:bg-white/[0.03] sm:p-8" set:html={htmlContent} />
+      </div>
+    </div>
+  </section>
+</Base>
