@@ -3,7 +3,8 @@
     { "key": "images", "en": "Images", "zh": "图片", "badge": { "en": "Images", "zh": "图片" } },
     { "key": "textCode", "en": "Text & Code", "zh": "文本 & 代码", "badge": { "en": "Text & Code", "zh": "文本 & 代码" } },
     { "key": "colors", "en": "Colors", "zh": "颜色", "badge": { "en": "Colors", "zh": "颜色" } },
-    { "key": "converters", "en": "Converters", "zh": "转换器", "badge": { "en": "Converters", "zh": "转换器" } }
+    { "key": "converters", "en": "Converters", "zh": "转换器", "badge": { "en": "Converters", "zh": "转换器" } },
+    { "key": "devTools", "en": "Dev Tools", "zh": "开发工具", "badge": { "en": "Dev Tools", "zh": "开发工具" } }
   ],
   "tags": [
     { "key": "open-source", "en": "Open Source", "zh": "开源" },
@@ -13,7 +14,7 @@
     { "key": "web", "en": "Web", "zh": "网页" },
     { "key": "privacy", "en": "Privacy", "zh": "隐私" }
   ],
-  "featured": ["demo"],
+  "featured": ["demo", "bkd"],
   "list": [
     {
       "slug": "demo",
@@ -21,6 +22,12 @@
       "logo": "logo.svg",
       "order": 1,
       "tags": ["open-source", "free", "desktop", "privacy"]
+    },
+    {
+      "slug": "bkd",
+      "category": "devTools",
+      "order": 2,
+      "tags": ["open-source", "free", "cli", "web"]
     }
   ]
 }

@@ -195,19 +195,30 @@ export function getToolMeta(slug: string): ToolMeta {
   }
 }
 
+/** Parse locale prefix from filename: "en.index.md" → { locale: "en", docSlug: "index" }, "index.md" → { locale: null, docSlug: "index" } */
+function parseDocFilename(filename: string): { locale: string | null; docSlug: string } {
+  const name = filename.replace('.md', '')
+  const match = name.match(/^(en|zh)\.(.+)$/)
+  if (match) return { locale: match[1], docSlug: match[2] }
+  return { locale: null, docSlug: name }
+}
+
 /** Sync: list doc slugs only (for getStaticPaths) */
 export function getToolDocSlugs(slug: string): string[] {
   try {
     const toolDir = join(CONTENT_ROOT, slug)
-    return readdirSync(toolDir)
-      .filter((f) => f.endsWith('.md'))
-      .map((f) => f.replace('.md', ''))
+    const files = readdirSync(toolDir).filter((f) => f.endsWith('.md'))
+    const slugs = new Set<string>()
+    for (const f of files) {
+      slugs.add(parseDocFilename(f).docSlug)
+    }
+    return [...slugs]
   } catch {
     return []
   }
 }
 
-export async function getToolDocs(slug: string): Promise<ToolDoc[]> {
+export async function getToolDocs(slug: string, locale?: Locale): Promise<ToolDoc[]> {
   let files: string[]
   const toolDir = join(CONTENT_ROOT, slug)
   try {
@@ -216,11 +227,23 @@ export async function getToolDocs(slug: string): Promise<ToolDoc[]> {
     return []
   }
 
+  // Group files by docSlug, preferring locale-prefixed files
+  const docMap = new Map<string, string>()
+  for (const f of files) {
+    const { locale: fileLocale, docSlug } = parseDocFilename(f)
+    if (fileLocale === null && !docMap.has(docSlug)) {
+      // Non-prefixed file: use as fallback
+      docMap.set(docSlug, f)
+    } else if (locale && fileLocale === locale) {
+      // Locale-prefixed file matching current locale: always prefer
+      docMap.set(docSlug, f)
+    }
+  }
+
   return Promise.all(
-    files.map(async (f) => {
+    [...docMap.entries()].map(async ([docSlug, f]) => {
       const raw = readFileSync(join(toolDir, f), 'utf-8')
       const { data, content } = matter(raw)
-      const docSlug = f.replace('.md', '')
       return {
         slug: docSlug,
         frontmatter: data as DocFrontmatter,
@@ -231,22 +254,31 @@ export async function getToolDocs(slug: string): Promise<ToolDoc[]> {
   )
 }
 
-export async function getToolDoc(toolSlug: string, docSlug: string) {
-  try {
-    const docPath = join(CONTENT_ROOT, toolSlug, `${docSlug}.md`)
-    const raw = readFileSync(docPath, 'utf-8')
-    const { data, content } = matter(raw)
-    return {
-      data: data as DocFrontmatter,
-      content,
-      html: await renderMarkdown(content),
+export async function getToolDoc(toolSlug: string, docSlug: string, locale?: Locale) {
+  // Try locale-prefixed file first, then fallback to non-prefixed
+  const candidates = locale
+    ? [`${locale}.${docSlug}.md`, `${docSlug}.md`]
+    : [`${docSlug}.md`]
+
+  for (const filename of candidates) {
+    try {
+      const docPath = join(CONTENT_ROOT, toolSlug, filename)
+      const raw = readFileSync(docPath, 'utf-8')
+      const { data, content } = matter(raw)
+      return {
+        data: data as DocFrontmatter,
+        content,
+        html: await renderMarkdown(content),
+      }
+    } catch {
+      continue
     }
-  } catch {
-    return {
-      data: {} as DocFrontmatter,
-      content: '',
-      html: '',
-    }
+  }
+
+  return {
+    data: {} as DocFrontmatter,
+    content: '',
+    html: '',
   }
 }
 
