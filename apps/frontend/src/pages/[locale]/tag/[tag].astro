@@ -6,12 +6,26 @@ import type { Locale } from '@/i18n'
 import { getToolsJson, getToolMeta, getToolBadge, getToolTags, resolveToolLogo, txt } from '@/lib/content'
 
 export function getStaticPaths() {
-  return [{ params: { locale: 'en' } }, { params: { locale: 'zh' } }]
+  const locales = ['en', 'zh'] as const
+  const toolsData = getToolsJson()
+  const paths: { params: { locale: string; tag: string } }[] = []
+
+  for (const loc of locales) {
+    for (const tag of toolsData.tags) {
+      paths.push({ params: { locale: loc, tag: tag.key } })
+    }
+  }
+
+  return paths
 }
 
 const locale = Astro.params.locale as Locale
+const tagKey = Astro.params.tag!
 const t = getTranslations(locale)
 const toolsData = getToolsJson()
+
+const tagObj = toolsData.tags.find((t) => t.key === tagKey)
+const tagLabel = tagObj ? txt(tagObj, locale) : tagKey
 
 const toolItems = toolsData.list
   .sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity))
@@ -43,7 +57,7 @@ const allTags = toolsData.tags.map((tag) => ({
 }))
 ---
 
-<Base title={t.hero.title} description={t.hero.subtitle} locale={locale}>
+<Base title={`${tagLabel} - ${t.hero.title}`} description={t.hero.subtitle} locale={locale}>
   <section class="relative z-10">
     <div class="mx-auto flex w-full max-w-5xl flex-col items-center px-4 pb-8 pt-8 text-center sm:px-6 sm:pt-10 lg:px-8">
       <h1 class="max-w-4xl text-4xl font-semibold tracking-[-0.05em] text-foreground sm:text-5xl lg:text-6xl">
@@ -60,6 +74,7 @@ const allTags = toolsData.tags.map((tag) => ({
         tools={toolItems}
         categories={categories}
         allTags={allTags}
+        initialTag={tagKey}
         translations={{
           searchPlaceholder: t.hero.searchPlaceholder,
           all: t.categories.all,

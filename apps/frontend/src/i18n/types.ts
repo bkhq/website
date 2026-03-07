@@ -25,6 +25,7 @@ export type Translations = {
   card: {
     view: string
     noResults: string
+    tags: string
   }
   pagination: {
     prev: string

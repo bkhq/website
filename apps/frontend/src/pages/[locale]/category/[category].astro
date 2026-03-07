@@ -3,7 +3,7 @@ import Base from '@/layouts/Base.astro'
 import { ToolSearch } from '@/components/ToolSearch'
 import { getTranslations } from '@/i18n'
 import type { Locale } from '@/i18n'
-import { getToolsJson, getToolMeta, getToolBadge, resolveToolLogo, txt } from '@/lib/content'
+import { getToolsJson, getToolMeta, getToolBadge, getToolTags, resolveToolLogo, txt } from '@/lib/content'
 
 export function getStaticPaths() {
   const locales = ['en', 'zh'] as const
@@ -42,12 +42,18 @@ const toolItems = toolsData.list
       order: item.order,
       title,
       description: txt(meta.description, locale),
+      tags: getToolTags(toolsData, item.tags ?? [], locale),
     }
   })
 
 const categories = toolsData.categories.map((cat) => ({
   key: cat.key,
   label: txt(cat, locale),
+}))
+
+const allTags = toolsData.tags.map((tag) => ({
+  key: tag.key,
+  label: txt(tag, locale),
 }))
 ---
 
@@ -67,12 +73,14 @@ const categories = toolsData.categories.map((cat) => ({
         locale={locale}
         tools={toolItems}
         categories={categories}
+        allTags={allTags}
         initialCategory={categoryKey}
         translations={{
           searchPlaceholder: t.hero.searchPlaceholder,
           all: t.categories.all,
           view: t.card.view,
           noResults: t.card.noResults,
+          tags: t.card.tags,
           pagination: t.pagination,
         }}
       />

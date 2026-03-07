@@ -28,6 +28,13 @@ export type ToolListItem = {
   category: string
   logo?: string
   order?: number
+  tags?: string[]
+}
+
+export type TagItem = {
+  key: string
+  en: string
+  zh: string
 }
 
 export type CategoryItem = {
@@ -39,6 +46,7 @@ export type CategoryItem = {
 
 export type ToolsJson = {
   categories: CategoryItem[]
+  tags: TagItem[]
   featured: string[]
   list: ToolListItem[]
 }
@@ -77,6 +85,14 @@ export function resolveToolLogo(slug: string, logo?: string): { type: 'icon'; na
     }
   }
   return { type: 'icon', name: logo }
+}
+
+/** Get localized tag labels for a tool */
+export function getToolTags(toolsData: ToolsJson, tagKeys: string[], locale: Locale): { key: string; label: string }[] {
+  return tagKeys.map((key) => {
+    const tag = toolsData.tags.find((t) => t.key === key)
+    return { key, label: tag ? txt(tag, locale) : key }
+  })
 }
 
 /** Get badge for a tool by looking up its category */

@@ -25,6 +25,7 @@ export const zh: Translations = {
   card: {
     view: '查看',
     noResults: '没有找到匹配的工具',
+    tags: '标签',
   },
   pagination: {
     prev: '上一页',

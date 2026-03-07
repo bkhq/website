@@ -25,6 +25,7 @@ export const en: Translations = {
   card: {
     view: 'View',
     noResults: 'No tools found',
+    tags: 'Tags',
   },
   pagination: {
     prev: 'Prev',
