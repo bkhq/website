@@ -1,0 +1,32 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+
+      - run: bun run build
+
+      - name: Resolve worker name
+        run: |
+          NAME="${{ vars.WORKER_NAME }}"
+          if [ -z "$NAME" ]; then
+            NAME=$(grep '^name' wrangler.toml | head -1 | sed 's/name *= *"\(.*\)"/\1/')
+          fi
+          echo "WORKER_NAME=$NAME" >> "$GITHUB_ENV"
+
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --name ${{ env.WORKER_NAME }}

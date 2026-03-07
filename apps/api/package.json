@@ -1,0 +1,24 @@
+{
+  "name": "@bkio/api",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "description": "API backend running on Cloudflare Workers with Hono.",
+  "scripts": {
+    "tsc": "bunx tsc",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@bkio/shared": "workspace:*",
+    "@hono/zod-validator": "^0.7.6",
+    "consola": "^3.4.2",
+    "hono": "^4.12.1",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@bkio/tsconfig": "workspace:*",
+    "@cloudflare/workers-types": "^4.20250224.0",
+    "typescript": "catalog:",
+    "vitest": "^4.0.18"
+  }
+}

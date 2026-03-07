@@ -1,0 +1,3 @@
+{
+  "extends": "@bkio/tsconfig/base.json"
+}

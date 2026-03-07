@@ -1,0 +1,84 @@
+---
+import Base from '@/layouts/Base.astro'
+import { getTranslations } from '@/i18n'
+import type { Locale } from '@/i18n'
+import { renderMarkdown } from '@/lib/content'
+
+export function getStaticPaths() {
+  return [{ params: { locale: 'en' } }, { params: { locale: 'zh' } }]
+}
+
+const locale = Astro.params.locale as Locale
+const t = getTranslations(locale)
+
+const content: Record<Locale, string> = {
+  en: `
+## Information We Collect
+
+We do not collect personal information or use cookies. This website uses Cloudflare Web Analytics, a privacy-first analytics service that does not use cookies or track individual users. It only collects aggregated data such as page views, referrers, and browser/device types.
+
+## Third-Party Services
+
+**Cloudflare Web Analytics** — We use Cloudflare Web Analytics to understand site usage. It does not collect personal data, does not use cookies, and does not track users across sites. Learn more at [Cloudflare Web Analytics](https://www.cloudflare.com/web-analytics/).
+
+**Cloudflare CDN** — This site is hosted on Cloudflare. Cloudflare may collect basic access logs (IP address, browser type, access time) as part of its standard CDN service. Please refer to [Cloudflare's Privacy Policy](https://www.cloudflare.com/privacypolicy/) for details.
+
+## External Links
+
+This site contains links to third-party websites. We are not responsible for the privacy practices of those sites. We encourage you to review the privacy policies of any site you visit.
+
+## Changes to This Policy
+
+We may update this Privacy Policy from time to time. Any changes will be posted on this page.
+
+## Contact
+
+If you have questions about this Privacy Policy, please open an issue on our [GitHub repository](https://github.com/bkhq/website).
+
+*Last updated: 2026-03-07*
+`,
+  zh: `
+## 我们收集的信息
+
+我们不收集个人信息，也不使用 Cookie。本网站使用 Cloudflare Web Analytics，这是一项隐私优先的分析服务，不使用 Cookie，也不追踪个人用户。它仅收集汇总数据，如页面浏览量、来源页面和浏览器/设备类型。
+
+## 第三方服务
+
+**Cloudflare Web Analytics** — 我们使用 Cloudflare Web Analytics 来了解网站使用情况。该服务不收集个人数据、不使用 Cookie、不跨站追踪用户。了解更多：[Cloudflare Web Analytics](https://www.cloudflare.com/web-analytics/)。
+
+**Cloudflare CDN** — 本站托管于 Cloudflare。Cloudflare 可能会作为其标准 CDN 服务的一部分收集基本访问日志（IP 地址、浏览器类型、访问时间）。详情请参阅 [Cloudflare 隐私政策](https://www.cloudflare.com/privacypolicy/)。
+
+## 外部链接
+
+本站包含指向第三方网站的链接。我们不对这些网站的隐私做法负责。建议您查阅所访问网站的隐私政策。
+
+## 政策变更
+
+我们可能会不时更新本隐私政策。任何变更将在本页面上发布。
+
+## 联系方式
+
+如果您对本隐私政策有任何疑问，请在我们的 [GitHub 仓库](https://github.com/bkhq/website) 上提交 Issue。
+
+*最后更新：2026-03-07*
+`,
+}
+
+const htmlContent = await renderMarkdown(content[locale])
+---
+
+<Base title={t.footer.privacy} locale={locale}>
+  <section class="relative z-10">
+    <div class="mx-auto w-full max-w-5xl px-4 pb-14 pt-8 sm:px-6 sm:pt-10 lg:px-8">
+      <div class="pb-8 text-center">
+        <h1 class="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+          {t.footer.privacy}
+        </h1>
+      </div>
+
+      <div class="flex items-start justify-center">
+        <article class="prose-article rounded-xl bg-white p-6 shadow-sm dark:bg-white/[0.03] sm:p-8" set:html={htmlContent} />
+      </div>
+    </div>
+  </section>
+</Base>

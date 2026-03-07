@@ -1,0 +1,22 @@
+{
+  "title": { "en": "Demo Tool", "zh": "示例工具" },
+  "description": {
+    "en": "A fast, privacy-focused desktop app that reduces PNG, JPG, and WebP file sizes using MozJPEG, OptiPNG, and libwebp — with batch processing, smart quality detection, and format conversion. All processing stays on your device.",
+    "zh": "一款快速、注重隐私的桌面应用，使用 MozJPEG、OptiPNG 和 libwebp 压缩 PNG、JPG 和 WebP 图片——支持批量处理、智能质量检测和格式转换。所有处理均在本地完成。"
+  },
+  "version": "2.4.1",
+  "website": "https://example.com/image-compressor",
+  "github": "https://github.com/example/image-compressor",
+  "addedAt": "2026-01-15",
+  "addedBy": { "name": "Alex", "url": "https://github.com/alex" },
+  "links": [
+    {
+      "label": { "en": "Changelog", "zh": "更新日志" },
+      "url": "https://github.com/example/image-compressor/releases"
+    },
+    {
+      "label": { "en": "Report Issue", "zh": "报告问题" },
+      "url": "https://github.com/example/image-compressor/issues"
+    }
+  ]
+}

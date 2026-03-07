@@ -1,0 +1,14 @@
+{
+  "extends": "@bkio/tsconfig/workers.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": "src",
+    "outDir": "dist",
+    "paths": {
+      "@/*": ["src/*"],
+      "@bkio/shared": ["../../packages/shared/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}
