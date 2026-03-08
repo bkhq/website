@@ -225,7 +225,7 @@ export function ToolSearch({ locale, tools, categories, allTags, initialCategory
               return (
                 <a
                   key={tool.slug}
-                  href={`/${locale}/tools/${tool.slug}`}
+                  href={`/${locale}/${tool.slug}`}
                   className="group/link"
                 >
                   <div

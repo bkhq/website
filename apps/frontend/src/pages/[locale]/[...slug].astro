@@ -58,8 +58,8 @@ const sidebarDocs = allDocs
     slug: doc.slug,
     href:
       doc.slug === 'index'
-        ? `/${locale}/tools/${toolSlug}`
-        : `/${locale}/tools/${toolSlug}/${doc.slug}`,
+        ? `/${locale}/${toolSlug}`
+        : `/${locale}/${toolSlug}/${doc.slug}`,
     title: doc.frontmatter.title
       ? txt(doc.frontmatter.title, locale)
       : doc.slug,
