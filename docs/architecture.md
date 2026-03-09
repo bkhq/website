@@ -24,5 +24,5 @@ packages/
 
 - **Single deployment**: Frontend and API deploy as one Cloudflare Worker to simplify infrastructure.
 - **Bun workspaces**: Monorepo managed by Bun with `catalog:` for shared dependency versions.
-- **Biome**: Single tool for linting and formatting (replaces ESLint + Prettier).
+- **ESLint + @antfu/eslint-config**: Single lint and formatting workflow via ESLint flat config.
 - **shadcn + Base UI**: shadcn (base-nova style) for styled components, Base UI for unstyled primitives.

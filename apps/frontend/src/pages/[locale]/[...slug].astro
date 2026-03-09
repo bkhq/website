@@ -4,7 +4,7 @@ import { getToolDocSlugs, getToolsJson } from '@/lib/content'
 
 export function getStaticPaths() {
   const toolsData = getToolsJson()
-  const paths: { params: { locale: string; slug: string } }[] = []
+  const paths: { params: { locale: string, slug: string } }[] = []
 
   for (const item of toolsData.list) {
     paths.push({ params: { locale: 'zh', slug: item.slug } })

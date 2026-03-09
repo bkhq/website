@@ -5,13 +5,13 @@ const translations = {
     privacy: 'Privacy Policy',
     terms: 'Terms of Service',
     submit: 'Submit',
-    copyright: '\u00a9 2026 BK.io',
+    copyright: '\u00A9 2026 BK.io',
   },
   zh: {
     privacy: '隐私政策',
     terms: '服务条款',
     submit: '投稿',
-    copyright: '\u00a9 2026 BK.io',
+    copyright: '\u00A9 2026 BK.io',
   },
 } as const
 

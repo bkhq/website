@@ -8,7 +8,8 @@ export function getStaticPaths() {
   const paths: { params: { slug: string } }[] = []
 
   for (const item of toolsData.list) {
-    if (isReservedRootSlug(item.slug)) continue
+    if (isReservedRootSlug(item.slug))
+continue
 
     paths.push({ params: { slug: item.slug } })
 

@@ -7,7 +7,7 @@ Project initialized with monorepo template:
 - apps/frontend: Vite + React 19 + Tailwind v4 + shadcn + Base UI
 - packages/tsconfig + packages/shared
 - GitHub Actions deploy workflow (manual trigger)
-- Biome for lint/format, Vitest for testing
+- ESLint-based lint/format workflow, Vitest for testing
 
 ## 2026-03-07 03:45 [decision]
 

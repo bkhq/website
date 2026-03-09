@@ -6,26 +6,26 @@ import { createHighlighter } from 'shiki'
 import type { Locale } from '@/i18n'
 import { localizePath } from '@/lib/routes'
 
-type I18nText = { en: string; zh: string }
+interface I18nText { en: string, zh: string }
 
-export type ToolLink = {
+export interface ToolLink {
   label: I18nText
   url: string
 }
 
-export type ToolMeta = {
+export interface ToolMeta {
   title: I18nText
   description: I18nText
   version?: string
   website?: string
   github?: string
   addedAt?: string
-  addedBy?: { name: string; url?: string }
+  addedBy?: { name: string, url?: string }
   links?: ToolLink[]
   link?: string[]
 }
 
-export type ToolListItem = {
+export interface ToolListItem {
   slug: string
   category: string
   logo?: string
@@ -33,32 +33,32 @@ export type ToolListItem = {
   tags?: string[]
 }
 
-export type TagItem = {
+export interface TagItem {
   key: string
   en: string
   zh: string
 }
 
-export type CategoryItem = {
+export interface CategoryItem {
   key: string
   en: string
   zh: string
-  badge: { en: string; zh: string }
+  badge: { en: string, zh: string }
 }
 
-export type ToolsJson = {
+export interface ToolsJson {
   categories: CategoryItem[]
   tags: TagItem[]
   featured: string[]
   list: ToolListItem[]
 }
 
-export type DocFrontmatter = {
+export interface DocFrontmatter {
   title?: I18nText
   order?: number
 }
 
-export type ToolDoc = {
+export interface ToolDoc {
   slug: string
   frontmatter: DocFrontmatter
   content: string
@@ -92,18 +92,18 @@ function escapeAttribute(str: string): string {
 }
 
 function sanitizeHtml(html: string): string {
-  const dangerousTags = /<\s*\/?\s*(script|iframe|object|embed|applet|form|input|textarea|button|select|meta|link)\b[^>]*>/gi
+  const dangerousTags = /<\s*(?:\/\s*)?(script|iframe|object|embed|applet|form|input|textarea|button|select|meta|link)\b[^>]*>/gi
   let cleaned = html.replace(dangerousTags, '')
   cleaned = cleaned.replace(/\bon\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
   cleaned = cleaned.replace(/href\s*=\s*"javascript:[^"]*"/gi, 'href="#"')
-  cleaned = cleaned.replace(/href\s*=\s*'javascript:[^']*'/gi, "href='#'")
+  cleaned = cleaned.replace(/href\s*=\s*'javascript:[^']*'/gi, 'href=\'#\'')
   cleaned = cleaned.replace(/src\s*=\s*"javascript:[^"]*"/gi, '')
   cleaned = cleaned.replace(/src\s*=\s*'javascript:[^']*'/gi, '')
   return cleaned
 }
 
 function sanitizeSvg(svg: string): string {
-  const dangerousTags = /<\s*\/?\s*(script|foreignObject|iframe|object|embed|applet|form|input|textarea|button|select|meta|link|style)\b[^>]*>/gi
+  const dangerousTags = /<\s*(?:\/\s*)?(script|foreignObject|iframe|object|embed|applet|form|input|textarea|button|select|meta|link|style)\b[^>]*>/gi
   let cleaned = svg.replace(dangerousTags, '')
   cleaned = cleaned.replace(/\bon\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
   cleaned = cleaned.replace(/href\s*=\s*"javascript:[^"]*"/gi, '')
@@ -121,10 +121,12 @@ function replaceLinkPlaceholders(content: string): string {
   const segments = content.split(/(```[\s\S]*?```)/g)
   return segments
     .map((segment) => {
-      if (segment.startsWith('```')) return segment
+      if (segment.startsWith('```'))
+        return segment
       return segment.replace(PLACEHOLDER_LINK_RE, (_match, rawTarget: string, rawLabel?: string) => {
         const target = rawTarget.trim().replace(/^\/+/, '')
-        if (!target) return rawLabel?.trim() || ''
+        if (!target)
+          return rawLabel?.trim() || ''
         const label = (rawLabel ?? rawTarget).trim()
         return `[${label}](/${target})`
       })
@@ -133,8 +135,10 @@ function replaceLinkPlaceholders(content: string): string {
 }
 
 function localizeInternalHref(href: string, locale: Locale): string {
-  if (!href.startsWith('/') || href.startsWith('//')) return href
-  if (href.startsWith('/api/') || href.startsWith('/assets/') || href.startsWith('/_')) return href
+  if (!href.startsWith('/') || href.startsWith('//'))
+    return href
+  if (href.startsWith('/api/') || href.startsWith('/assets/') || href.startsWith('/_'))
+    return href
 
   const suffixIndex = href.search(/[?#]/)
   const path = suffixIndex === -1 ? href : href.slice(0, suffixIndex)
@@ -142,7 +146,8 @@ function localizeInternalHref(href: string, locale: Locale): string {
   const segments = path.split('/').filter(Boolean)
   const lastSegment = segments.at(-1) ?? ''
 
-  if (lastSegment.includes('.')) return href
+  if (lastSegment.includes('.'))
+    return href
 
   if (segments[0] === 'en' || segments[0] === 'zh') {
     const rest = segments.slice(1)
@@ -156,13 +161,15 @@ function localizeInternalHref(href: string, locale: Locale): string {
 function rewriteInternalLinks(html: string, locale: Locale): string {
   return html.replace(/href=(['"])([^'"]+)\1/g, (match, quote: string, href: string) => {
     const localized = localizeInternalHref(href, locale)
-    if (localized === href) return match
+    if (localized === href)
+      return match
     return `href=${quote}${escapeAttribute(localized)}${quote}`
   })
 }
 
-export function resolveToolLogo(slug: string, logo?: string): { type: 'icon'; name: string } | { type: 'svg'; content: string } | { type: 'none' } {
-  if (!logo) return { type: 'none' }
+export function resolveToolLogo(slug: string, logo?: string): { type: 'icon', name: string } | { type: 'svg', content: string } | { type: 'none' } {
+  if (!logo)
+    return { type: 'none' }
   if (!isValidSlug(slug) || (logo.includes('.') && !isValidSlug(logo.replace('.svg', '')))) {
     return { type: 'none' }
   }
@@ -170,7 +177,8 @@ export function resolveToolLogo(slug: string, logo?: string): { type: 'icon'; na
   if (logo.includes('.')) {
     try {
       const logoPath = resolve(CONTENT_ROOT, slug, logo)
-      if (!logoPath.startsWith(resolve(CONTENT_ROOT))) return { type: 'none' }
+      if (!logoPath.startsWith(resolve(CONTENT_ROOT)))
+        return { type: 'none' }
       const content = readFileSync(logoPath, 'utf-8')
       return { type: 'svg', content: sanitizeSvg(content) }
     } catch {
@@ -181,16 +189,17 @@ export function resolveToolLogo(slug: string, logo?: string): { type: 'icon'; na
   return { type: 'icon', name: logo }
 }
 
-export function getToolTags(toolsData: ToolsJson, tagKeys: string[], locale: Locale): { key: string; label: string }[] {
+export function getToolTags(toolsData: ToolsJson, tagKeys: string[], locale: Locale): { key: string, label: string }[] {
   return tagKeys.map((key) => {
-    const tag = toolsData.tags.find((item) => item.key === key)
+    const tag = toolsData.tags.find(item => item.key === key)
     return { key, label: tag ? txt(tag, locale) : key }
   })
 }
 
 export function getToolBadge(toolsData: ToolsJson, category: string, locale: Locale): string {
-  const categoryItem = toolsData.categories.find((item) => item.key === category)
-  if (!categoryItem) return category
+  const categoryItem = toolsData.categories.find(item => item.key === category)
+  if (!categoryItem)
+    return category
   return txt(categoryItem.badge, locale)
 }
 
@@ -247,17 +256,18 @@ export function getToolMeta(slug: string): ToolMeta {
   }
 }
 
-function parseDocFilename(filename: string): { locale: string | null; docSlug: string } {
+function parseDocFilename(filename: string): { locale: string | null, docSlug: string } {
   const name = filename.replace('.md', '')
   const match = name.match(/^(en|zh)\.(.+)$/)
-  if (match) return { locale: match[1], docSlug: match[2] }
+  if (match)
+    return { locale: match[1], docSlug: match[2] }
   return { locale: null, docSlug: name }
 }
 
 export function getToolDocSlugs(slug: string): string[] {
   try {
     const toolDir = join(CONTENT_ROOT, slug)
-    const files = readdirSync(toolDir).filter((filename) => filename.endsWith('.md'))
+    const files = readdirSync(toolDir).filter(filename => filename.endsWith('.md'))
     const slugs = new Set<string>()
     for (const filename of files) {
       slugs.add(parseDocFilename(filename).docSlug)
@@ -273,7 +283,7 @@ export async function getToolDocs(slug: string, locale?: Locale): Promise<ToolDo
   const toolDir = join(CONTENT_ROOT, slug)
 
   try {
-    files = readdirSync(toolDir).filter((filename) => filename.endsWith('.md'))
+    files = readdirSync(toolDir).filter(filename => filename.endsWith('.md'))
   } catch {
     return []
   }
@@ -289,7 +299,7 @@ export async function getToolDocs(slug: string, locale?: Locale): Promise<ToolDo
   }
 
   return Promise.all(
-    [...docMap.entries()].map(async ([docSlug, filename]) => {
+    Array.from(docMap.entries(), async ([docSlug, filename]) => {
       const raw = readFileSync(join(toolDir, filename), 'utf-8')
       const { data, content } = matter(raw)
       return {

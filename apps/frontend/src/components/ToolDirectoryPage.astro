@@ -53,12 +53,12 @@ const toolItems = toolsData.list
     }
   })
 
-const categories = toolsData.categories.map((cat) => ({
+const categories = toolsData.categories.map(cat => ({
   key: cat.key,
   label: txt(cat, locale),
 }))
 
-const allTags = toolsData.tags.map((tag) => ({
+const allTags = toolsData.tags.map(tag => ({
   key: tag.key,
   label: txt(tag, locale),
 }))

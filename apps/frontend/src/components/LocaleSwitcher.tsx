@@ -12,7 +12,7 @@ type Locale = 'en' | 'zh'
 
 const STORAGE_KEY = 'bkio-locale'
 
-const localeOptions: { value: Locale; label: string }[] = [
+const localeOptions: { value: Locale, label: string }[] = [
   { value: 'en', label: 'English' },
   { value: 'zh', label: '中文' },
 ]
@@ -36,7 +36,7 @@ export function LocaleSwitcher({ locale: initial }: { locale: Locale }) {
         <Globe className="h-4 w-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {localeOptions.map((opt) => (
+        {localeOptions.map(opt => (
           <DropdownMenuItem
             key={opt.value}
             onClick={() => setLocale(opt.value)}

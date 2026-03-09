@@ -47,22 +47,24 @@ const fullTitle = title === siteName ? siteName : `${title} - ${siteName}`
     <meta name="twitter:title" content={title} />
     {description && <meta name="twitter:description" content={description} />}
     <script is:inline>
-      ;(function () {
-        var t = localStorage.getItem('bkio-theme')
-        var dark =
-          t === 'dark' ||
-          (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches)
-        if (dark) document.documentElement.classList.add('dark')
-      })()
-    </script>
+;(function () {
+  const t = localStorage.getItem('bkio-theme')
+  const dark =
+    t === 'dark' ||
+    (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches)
+  if (dark)
+    document.documentElement.classList.add('dark')
+})()
+</script>
     {detectLocale && (
       <script is:inline>
-        ;(function () {
-          var saved = localStorage.getItem('bkio-locale')
-          var locale = saved === 'zh' ? 'zh' : (saved === 'en' ? null : (navigator.language.startsWith('zh') ? 'zh' : null))
-          if (locale === 'zh') window.location.replace('/zh/')
-        })()
-      </script>
+;(function () {
+  const saved = localStorage.getItem('bkio-locale')
+  const locale = saved === 'zh' ? 'zh' : (saved === 'en' ? null : (navigator.language.startsWith('zh') ? 'zh' : null))
+  if (locale === 'zh')
+    window.location.replace('/zh/')
+})()
+</script>
     )}
   </head>
   <body>

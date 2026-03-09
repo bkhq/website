@@ -10,8 +10,8 @@ bkio — Monorepo template for Bun + Hono + Vite + React + Cloudflare Workers.
 - `bun run build` — Type-check API + build frontend
 - `bun run deploy` — Build and deploy to Cloudflare Workers
 - `bun run test` — Run all tests
-- `bun run lint` — Lint with Biome
-- `bun run format` — Format with Biome
+- `bun run lint` — Lint with ESLint
+- `bun run format` — Format with ESLint autofix
 
 ## Project Development
 

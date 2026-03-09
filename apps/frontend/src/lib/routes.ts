@@ -13,7 +13,8 @@ export const RESERVED_ROOT_SEGMENTS = new Set([
 ])
 
 function normalizePath(path: string): string {
-  if (!path || path === '/') return '/'
+  if (!path || path === '/')
+    return '/'
 
   const normalized = `/${path}`.replace(/\/+/g, '/')
   if (normalized.length > 1 && normalized.endsWith('/')) {
@@ -25,7 +26,8 @@ function normalizePath(path: string): string {
 
 export function localizePath(locale: Locale, path: string): string {
   const normalized = normalizePath(path)
-  if (locale === DEFAULT_LOCALE) return normalized
+  if (locale === DEFAULT_LOCALE)
+    return normalized
   return normalized === '/' ? `/${locale}` : `/${locale}${normalized}`
 }
 

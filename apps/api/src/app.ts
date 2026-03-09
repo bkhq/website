@@ -2,11 +2,11 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
 
-type AssetBinding = {
+interface AssetBinding {
   fetch: (request: Request | string, init?: RequestInit) => Promise<Response>
 }
 
-export type Env = {
+export interface Env {
   Bindings: {
     // Add your bindings here, e.g.:
     // DB: D1Database
@@ -32,11 +32,16 @@ function buildRedirectPath(pathname: string): string | null {
 
   const prefix = locale === 'zh' ? '/zh' : ''
 
-  if (path === '/privacy') return `${prefix}/sys/privacy`
-  if (path === '/terms') return `${prefix}/sys/terms`
-  if (path === '/submit') return `${prefix}/sys/submit`
-  if (path === '/tag') return `${prefix}/tags`
-  if (path.startsWith('/tag/')) return `${prefix}/tags/${path.slice('/tag/'.length)}`
+  if (path === '/privacy')
+    return `${prefix}/sys/privacy`
+  if (path === '/terms')
+    return `${prefix}/sys/terms`
+  if (path === '/submit')
+    return `${prefix}/sys/submit`
+  if (path === '/tag')
+    return `${prefix}/tags`
+  if (path.startsWith('/tag/'))
+    return `${prefix}/tags/${path.slice('/tag/'.length)}`
 
   if (pathname === '/en' || pathname.startsWith('/en/')) {
     return path

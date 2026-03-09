@@ -12,9 +12,9 @@ type Theme = 'light' | 'dark'
 const STORAGE_KEY = 'bkio-theme'
 
 function getSystemTheme(): Theme {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches
-    ? 'dark'
-    : 'light'
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ?
+    'dark' :
+    'light'
 }
 
 const themeOptions: {
@@ -29,9 +29,11 @@ const themeOptions: {
 
 export function ThemeToggle({ locale }: { locale: 'en' | 'zh' }) {
   const [theme, setThemeState] = useState<Theme>(() => {
-    if (typeof window === 'undefined') return 'light'
+    if (typeof window === 'undefined')
+      return 'light'
     const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved === 'light' || saved === 'dark') return saved
+    if (saved === 'light' || saved === 'dark')
+      return saved
     return getSystemTheme()
   })
 
@@ -50,11 +52,13 @@ export function ThemeToggle({ locale }: { locale: 'en' | 'zh' }) {
         className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-lg outline-none hover:bg-muted hover:text-foreground size-7"
         aria-label="Toggle color theme"
       >
-        {theme === 'dark' ? (
-          <Moon className="h-4 w-4" />
-        ) : (
-          <Sun className="h-4 w-4" />
-        )}
+        {theme === 'dark' ?
+            (
+              <Moon className="h-4 w-4" />
+            ) :
+            (
+              <Sun className="h-4 w-4" />
+            )}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {themeOptions.map((opt) => {
