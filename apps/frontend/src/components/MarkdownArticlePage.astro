@@ -1,0 +1,39 @@
+---
+import type { Locale } from '@/i18n'
+import Base from '@/layouts/Base.astro'
+import { renderMarkdown } from '@/lib/content'
+
+interface Props {
+  locale: Locale
+  title: string
+  description?: string
+  content: string
+}
+
+const { locale, title, description, content } = Astro.props
+const htmlContent = await renderMarkdown(content, locale)
+---
+
+<Base title={title} description={description} locale={locale}>
+  <section class="relative z-10">
+    <div class="mx-auto w-full max-w-5xl px-4 pb-14 pt-8 sm:px-6 sm:pt-10 lg:px-8">
+      <div class="pb-8 text-center">
+        <h1 class="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+          {title}
+        </h1>
+        {description && (
+          <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+            {description}
+          </p>
+        )}
+        <div class="mt-5">
+          <slot name="actions" />
+        </div>
+      </div>
+
+      <div class="flex items-start justify-center">
+        <article class="prose-article rounded-xl bg-white p-6 shadow-sm dark:bg-white/[0.03] sm:p-8" set:html={htmlContent} />
+      </div>
+    </div>
+  </section>
+</Base>

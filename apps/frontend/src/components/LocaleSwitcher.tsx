@@ -6,6 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { switchLocalePath } from '@/lib/routes'
 
 type Locale = 'en' | 'zh'
 
@@ -22,10 +23,8 @@ export function LocaleSwitcher({ locale: initial }: { locale: Locale }) {
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next)
     localStorage.setItem(STORAGE_KEY, next)
-    // Navigate to the same path under the new locale prefix
-    const path = window.location.pathname
-    const newPath = path.replace(/^\/(en|zh)/, `/${next}`)
-    window.location.href = newPath === path ? `/${next}/` : newPath
+    const newPath = switchLocalePath(window.location.pathname, next)
+    window.location.href = newPath
   }, [])
 
   return (

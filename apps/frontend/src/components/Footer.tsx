@@ -1,3 +1,5 @@
+import { localizePath } from '@/lib/routes'
+
 const translations = {
   en: {
     privacy: 'Privacy Policy',
@@ -21,9 +23,9 @@ export function Footer({ locale }: { locale: 'en' | 'zh' }) {
       <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center gap-3 pt-6 text-center sm:flex-row sm:justify-between sm:text-left">
           <div className="flex flex-wrap items-center justify-center gap-5 sm:justify-start">
-            <a href={`/${locale}/privacy`} className="transition-colors hover:text-foreground">{t.privacy}</a>
-            <a href={`/${locale}/terms`} className="transition-colors hover:text-foreground">{t.terms}</a>
-            <a href={`/${locale}/submit`} className="transition-colors hover:text-foreground">{t.submit}</a>
+            <a href={localizePath(locale, '/sys/privacy')} className="transition-colors hover:text-foreground">{t.privacy}</a>
+            <a href={localizePath(locale, '/sys/terms')} className="transition-colors hover:text-foreground">{t.terms}</a>
+            <a href={localizePath(locale, '/sys/submit')} className="transition-colors hover:text-foreground">{t.submit}</a>
           </div>
           <p className="whitespace-nowrap">{t.copyright}</p>
         </div>

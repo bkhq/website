@@ -50,7 +50,7 @@ export type Translations = {
     usage: string
     troubleshooting: string
     introduction: string
-    relatedTools: string
+    link: string
   }
   submit: {
     title: string

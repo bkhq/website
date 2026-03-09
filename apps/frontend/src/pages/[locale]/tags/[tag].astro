@@ -1,0 +1,21 @@
+---
+import ToolDirectoryPage from '@/components/ToolDirectoryPage.astro'
+import { getTranslations } from '@/i18n'
+import { getToolsJson, txt } from '@/lib/content'
+
+export function getStaticPaths() {
+  const toolsData = getToolsJson()
+  return toolsData.tags.map((tag) => ({
+    params: { locale: 'zh', tag: tag.key },
+  }))
+}
+
+const locale = 'zh' as const
+const tagKey = Astro.params.tag!
+const t = getTranslations(locale)
+const toolsData = getToolsJson()
+const tagObj = toolsData.tags.find((item) => item.key === tagKey)
+const tagLabel = tagObj ? txt(tagObj, locale) : tagKey
+---
+
+<ToolDirectoryPage locale={locale} metaTitle={`${tagLabel} - ${t.hero.title}`} initialTag={tagKey} />

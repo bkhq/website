@@ -1,0 +1,49 @@
+---
+import { getTranslations } from '@/i18n'
+import MarkdownArticlePage from '@/components/MarkdownArticlePage.astro'
+
+export function getStaticPaths() {
+  return [{ params: { locale: 'zh' } }]
+}
+
+const locale = 'zh' as const
+const t = getTranslations(locale)
+
+const content = String.raw`
+## 条款接受
+
+访问和使用本网站（"BK.io"）即表示您同意受本服务条款的约束。如果您不同意，请勿使用本站。
+
+## 服务描述
+
+BK.io 是一个面向开发者的开放内容平台。所有内容，包括工具、教程、指南和文档，均由社区用户贡献。我们不创建、审核或背书任何用户提交的内容，也不托管或运营本站链接的第三方项目。
+
+## 用户内容
+
+通过提交内容（通过 Pull Request 或 Issue），您授予我们非独占、免版税的许可，允许我们在本站展示和分发该内容。您保证您有权提交此类内容。
+
+## 免责声明
+
+本站所有内容均由用户贡献，按"原样"提供，不作任何明示或暗示的保证。我们不保证任何信息的准确性、完整性、可靠性或实用性。您应自行判断和评估内容，使用风险由您自行承担。
+
+## 第三方链接
+
+本站链接到第三方网站和工具。我们不对这些网站的内容、可用性或做法负责。使用这些链接的风险由您自行承担。
+
+## 责任限制
+
+在任何情况下，BK.io、其运营者或贡献者均不对因使用或无法使用本站、或因依赖本站发布的任何内容而产生的任何损害承担责任。
+
+## 条款变更
+
+我们保留随时修改这些条款的权利。变更在发布后立即生效。继续使用本站即表示接受更新后的条款。
+
+## 联系方式
+
+如果您对本服务条款有任何疑问，请在我们的 [GitHub 仓库](https://github.com/bkhq/website) 上提交 Issue。
+
+*最后更新：2026-03-07*
+`
+---
+
+<MarkdownArticlePage locale={locale} title={t.footer.terms} content={content} />

@@ -1,0 +1,64 @@
+---
+import { GithubPrButton } from '@/components/GithubPrButton'
+import MarkdownArticlePage from '@/components/MarkdownArticlePage.astro'
+import { getTranslations } from '@/i18n'
+
+const locale = 'en' as const
+const t = getTranslations(locale)
+
+const content = String.raw`
+## Quick Submit
+
+Open an Issue with the tool URL if you want AI to draft the content for you.
+
+[Submit via Issue →](https://github.com/bkhq/website/issues/new?template=quick-submit.yml&title=%5BSubmit%5D+Tool+Name)
+
+If you want to add a tool manually, start from the [Template Guide →](/template).
+
+## Manual Submit
+
+\`\`\`bash
+# 1. Fork the repo on GitHub
+# 2. Clone your fork
+# 3. Add content/<your-slug>/
+# 4. Register the slug in content/list.json
+# 5. Commit, push, and open a Pull Request
+
+git clone https://github.com/<your-username>/website.git
+cd website
+mkdir -p content/my-tool
+\`\`\`
+
+## Minimum Structure
+
+\`\`\`text
+content/
+├── list.json
+└── my-tool/
+    ├── meta.json
+    ├── en.index.md
+    ├── zh.index.md
+    ├── en.installation.md
+    ├── zh.installation.md
+    ├── en.configuration.md
+    ├── zh.configuration.md
+    ├── en.data.md
+    ├── zh.data.md
+    ├── en.faq.md
+    └── zh.faq.md
+\`\`\`
+
+## Notes
+
+- Keep the slug URL-safe. Use \`zzci-chrome\`, not \`zzci/chrome\`.
+- Put display names such as \`zzci/chrome\` in \`meta.json\`.
+- Use placeholders like \`[[agent-browser]]\` or \`[[bkd/data|Data & Storage]]\` for internal links. They are localized automatically.
+- Add \`link\` in \`meta.json\` if this tool should link to another entry.
+`
+---
+
+<MarkdownArticlePage locale={locale} title={t.submit.title} description={t.submit.description} content={content}>
+  <div slot="actions" class="flex justify-center">
+    <GithubPrButton locale={locale} client:load />
+  </div>
+</MarkdownArticlePage>

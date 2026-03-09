@@ -7,7 +7,7 @@
   "github": "https://github.com/zzci/chrome",
   "addedAt": "2026-03-09",
   "addedBy": { "name": "zzci", "url": "https://github.com/zzci" },
-  "relatedTools": ["agent-browser"],
+  "link": ["agent-browser"],
   "links": [
     {
       "label": { "en": "Report Issue", "zh": "问题反馈" },

@@ -4,6 +4,7 @@ import matter from 'gray-matter'
 import { Marked } from 'marked'
 import { createHighlighter } from 'shiki'
 import type { Locale } from '@/i18n'
+import { localizePath } from '@/lib/routes'
 
 type I18nText = { en: string; zh: string }
 
@@ -21,7 +22,7 @@ export type ToolMeta = {
   addedAt?: string
   addedBy?: { name: string; url?: string }
   links?: ToolLink[]
-  relatedTools?: string[]
+  link?: string[]
 }
 
 export type ToolListItem = {
@@ -131,11 +132,6 @@ function replaceLinkPlaceholders(content: string): string {
     .join('')
 }
 
-function buildLocalizedPath(path: string, locale: Locale): string {
-  if (!path || path === '/') return `/${locale}`
-  return `/${locale}${path.startsWith('/') ? path : `/${path}`}`
-}
-
 function localizeInternalHref(href: string, locale: Locale): string {
   if (!href.startsWith('/') || href.startsWith('//')) return href
   if (href.startsWith('/api/') || href.startsWith('/assets/') || href.startsWith('/_')) return href
@@ -150,11 +146,11 @@ function localizeInternalHref(href: string, locale: Locale): string {
 
   if (segments[0] === 'en' || segments[0] === 'zh') {
     const rest = segments.slice(1)
-    const localized = buildLocalizedPath(rest.length > 0 ? `/${rest.join('/')}` : '/', locale)
+    const localized = localizePath(locale, rest.length > 0 ? `/${rest.join('/')}` : '/')
     return `${localized}${suffix}`
   }
 
-  return `${buildLocalizedPath(path, locale)}${suffix}`
+  return `${localizePath(locale, path)}${suffix}`
 }
 
 function rewriteInternalLinks(html: string, locale: Locale): string {
@@ -246,7 +242,7 @@ export function getToolMeta(slug: string): ToolMeta {
     return {
       title: { en: slug, zh: slug },
       description: { en: '', zh: '' },
-      relatedTools: [],
+      link: [],
     }
   }
 }

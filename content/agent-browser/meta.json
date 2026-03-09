@@ -8,7 +8,7 @@
   "github": "https://github.com/vercel-labs/agent-browser",
   "addedAt": "2026-03-09",
   "addedBy": { "name": "vercel-labs", "url": "https://github.com/vercel-labs" },
-  "relatedTools": ["zzci-chrome"],
+  "link": ["zzci-chrome"],
   "links": [
     {
       "label": { "en": "Website", "zh": "官网" },

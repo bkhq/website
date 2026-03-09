@@ -16,6 +16,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import type { Locale } from '@/i18n'
+import { localizePath } from '@/lib/routes'
 import { cn } from '@/lib/utils'
 
 type ToolTag = {
@@ -52,7 +54,7 @@ const iconMap: Record<string, LucideIcon> = {
 const PAGE_SIZE = 12
 
 interface Props {
-  locale: string
+  locale: Locale
   tools: ToolItem[]
   categories: Category[]
   allTags: ToolTag[]
@@ -133,7 +135,7 @@ export function ToolSearch({ locale, tools, categories, allTags, initialCategory
     setActiveCategory(key)
     setActiveTag('')
     setPage(1)
-    const url = key === 'all' ? `/${locale}/` : `/${locale}/category/${key}`
+    const url = key === 'all' ? localizePath(locale, '/') : localizePath(locale, `/category/${key}`)
     window.history.replaceState(null, '', url)
   }
 
@@ -142,9 +144,11 @@ export function ToolSearch({ locale, tools, categories, allTags, initialCategory
     setActiveTag(newTag)
     setPage(1)
     if (newTag) {
-      window.history.replaceState(null, '', `/${locale}/tag/${newTag}`)
+      window.history.replaceState(null, '', localizePath(locale, `/tags/${newTag}`))
     } else {
-      const url = activeCategory === 'all' ? `/${locale}/` : `/${locale}/category/${activeCategory}`
+      const url = activeCategory === 'all'
+        ? localizePath(locale, '/')
+        : localizePath(locale, `/category/${activeCategory}`)
       window.history.replaceState(null, '', url)
     }
   }
@@ -225,7 +229,7 @@ export function ToolSearch({ locale, tools, categories, allTags, initialCategory
               return (
                 <a
                   key={tool.slug}
-                  href={`/${locale}/${tool.slug}`}
+                  href={localizePath(locale, `/${tool.slug}`)}
                   className="group/link"
                 >
                   <div

@@ -1,0 +1,67 @@
+---
+import { GithubPrButton } from '@/components/GithubPrButton'
+import MarkdownArticlePage from '@/components/MarkdownArticlePage.astro'
+import { getTranslations } from '@/i18n'
+
+export function getStaticPaths() {
+  return [{ params: { locale: 'zh' } }]
+}
+
+const locale = 'zh' as const
+const t = getTranslations(locale)
+
+const content = String.raw`
+## 快速投稿
+
+如果你只想丢一个工具链接，让 AI 帮你起草内容，可以直接提 Issue。
+
+[通过 Issue 提交 →](https://github.com/bkhq/website/issues/new?template=quick-submit.yml&title=%5B%E6%8F%90%E4%BA%A4%5D+%E5%B7%A5%E5%85%B7%E5%90%8D%E7%A7%B0)
+
+如果你想自己添加工具，先看 [模板说明 →](/template)。
+
+## 手动提交
+
+\`\`\`bash
+# 1. 在 GitHub 上 Fork 仓库
+# 2. 克隆你的 Fork
+# 3. 添加 content/<your-slug>/
+# 4. 在 content/list.json 里注册 slug
+# 5. 提交、推送并创建 Pull Request
+
+git clone https://github.com/<your-username>/website.git
+cd website
+mkdir -p content/my-tool
+\`\`\`
+
+## 最小目录结构
+
+\`\`\`text
+content/
+├── list.json
+└── my-tool/
+    ├── meta.json
+    ├── en.index.md
+    ├── zh.index.md
+    ├── en.installation.md
+    ├── zh.installation.md
+    ├── en.configuration.md
+    ├── zh.configuration.md
+    ├── en.data.md
+    ├── zh.data.md
+    ├── en.faq.md
+    └── zh.faq.md
+\`\`\`
+
+## 说明
+
+- slug 必须是 URL 安全格式，像 \`zzci/chrome\` 这样的展示名应该写进 \`meta.json\`，slug 则用 \`zzci-chrome\`。
+- 文档里的站内链接用 \`[[agent-browser]]\` 或 \`[[bkd/data|数据说明]]\` 这种占位符写法，渲染时会自动按语言切换。
+- 如果两个工具需要互相关联，可以在 \`meta.json\` 里添加 \`link\`。
+`
+---
+
+<MarkdownArticlePage locale={locale} title={t.submit.title} description={t.submit.description} content={content}>
+  <div slot="actions" class="flex justify-center">
+    <GithubPrButton locale={locale} client:load />
+  </div>
+</MarkdownArticlePage>

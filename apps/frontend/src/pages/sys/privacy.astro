@@ -1,0 +1,35 @@
+---
+import { getTranslations } from '@/i18n'
+import MarkdownArticlePage from '@/components/MarkdownArticlePage.astro'
+
+const locale = 'en' as const
+const t = getTranslations(locale)
+
+const content = String.raw`
+## Information We Collect
+
+We do not collect personal information or use cookies. This website uses Cloudflare Web Analytics, a privacy-first analytics service that does not use cookies or track individual users. It only collects aggregated data such as page views, referrers, and browser/device types.
+
+## Third-Party Services
+
+**Cloudflare Web Analytics** — We use Cloudflare Web Analytics to understand site usage. It does not collect personal data, does not use cookies, and does not track users across sites. Learn more at [Cloudflare Web Analytics](https://www.cloudflare.com/web-analytics/).
+
+**Cloudflare CDN** — This site is hosted on Cloudflare. Cloudflare may collect basic access logs (IP address, browser type, access time) as part of its standard CDN service. Please refer to [Cloudflare's Privacy Policy](https://www.cloudflare.com/privacypolicy/) for details.
+
+## External Links
+
+This site contains links to third-party websites. We are not responsible for the privacy practices of those sites. We encourage you to review the privacy policies of any site you visit.
+
+## Changes to This Policy
+
+We may update this Privacy Policy from time to time. Any changes will be posted on this page.
+
+## Contact
+
+If you have questions about this Privacy Policy, please open an issue on our [GitHub repository](https://github.com/bkhq/website).
+
+*Last updated: 2026-03-07*
+`
+---
+
+<MarkdownArticlePage locale={locale} title={t.footer.privacy} content={content} />
