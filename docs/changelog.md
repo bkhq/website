@@ -42,3 +42,8 @@ Static generation no longer produces `/demo/*` or `/zh/demo/*` pages.
 
 Added optional `path` mapping for tool content directories while keeping URL `slug` unchanged.
 Migrated `zzci-chrome` and `zzci-traefik` to nested `content/zzci/...` directories and updated content loading to resolve files by `path`.
+
+## 2026-03-09 21:06 [decision]
+
+Split the site-wide tag dictionary out of `content/list.json` into `content/tags.json`.
+Kept the frontend data API stable by having `getToolsJson()` compose `tags.json` and `list.json` into the existing structure.

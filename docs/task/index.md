@@ -37,3 +37,4 @@ Each task is a single line linking to its detail file. All detailed information 
 - [x] [**FE-003 删除 category 数据与路由并统一使用 tags 分类**](FE-003.md) `P1`
 - [x] [**FE-004 删除 demo tool 内容与目录**](FE-004.md) `P1`
 - [x] [**FE-005 为工具内容目录增加 path 映射并支持嵌套目录**](FE-005.md) `P1`
+- [x] [**FE-006 拆分 tags 到独立 content/tags.json**](FE-006.md) `P1`

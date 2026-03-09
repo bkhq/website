@@ -39,6 +39,11 @@ export interface TagItem {
   zh: string
 }
 
+interface ToolListJson {
+  featured: string[]
+  list: ToolListItem[]
+}
+
 export interface ToolsJson {
   tags: TagItem[]
   featured: string[]
@@ -244,7 +249,14 @@ export async function renderMarkdown(content: string, locale?: Locale): Promise<
 }
 
 export function getToolsJson(): ToolsJson {
-  return JSON.parse(readFileSync(join(CONTENT_ROOT, 'list.json'), 'utf-8'))
+  const listJson = JSON.parse(readFileSync(join(CONTENT_ROOT, 'list.json'), 'utf-8')) as ToolListJson
+  const tagsJson = JSON.parse(readFileSync(join(CONTENT_ROOT, 'tags.json'), 'utf-8')) as TagItem[]
+
+  return {
+    tags: tagsJson,
+    featured: listJson.featured,
+    list: listJson.list,
+  }
 }
 
 export function getToolMeta(slug: string, toolsData?: ToolsJson): ToolMeta {

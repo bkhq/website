@@ -35,3 +35,4 @@ Each plan is a single line linking to its detail file. All detailed information 
 - [x] [**PLAN-005 删除 category 并统一使用 tags 分类**](PLAN-005.md) `2026-03-09`
 - [x] [**PLAN-006 删除 demo tool 内容与目录**](PLAN-006.md) `2026-03-09`
 - [x] [**PLAN-007 为工具内容目录增加 path 映射并支持嵌套目录**](PLAN-007.md) `2026-03-09`
+- [x] [**PLAN-008 拆分 tags 到独立 content/tags.json**](PLAN-008.md) `2026-03-09`

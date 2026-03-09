@@ -12,6 +12,7 @@ Use this page as the copyable starter for a custom tool entry.
 
 \`\`\`text
 content/
+├── tags.json
 ├── list.json
 └── my-tool/
     ├── meta.json
@@ -41,6 +42,15 @@ content/
 }
 \`\`\`
 
+## \`content/tags.json\`
+
+\`\`\`json
+[
+  { "key": "devTools", "en": "Dev Tools", "zh": "开发工具" },
+  { "key": "open-source", "en": "Open Source", "zh": "开源" }
+]
+\`\`\`
+
 ## \`content/list.json\` Entry
 
 \`\`\`json
@@ -53,6 +63,7 @@ content/
 
 Use \`path\` only when the content directory should differ from the URL slug.
 For example, \`slug: "zzci-chrome"\` can point to \`path: "zzci/chrome"\`.
+Keep tag label definitions in \`content/tags.json\`, and reference their keys from \`content/list.json\`.
 
 ## Common Tags
 

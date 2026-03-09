@@ -16,6 +16,7 @@ const content = String.raw`
 
 \`\`\`text
 content/
+├── tags.json
 ├── list.json
 └── my-tool/
     ├── meta.json
@@ -45,6 +46,15 @@ content/
 }
 \`\`\`
 
+## \`content/tags.json\`
+
+\`\`\`json
+[
+  { "key": "devTools", "en": "Dev Tools", "zh": "开发工具" },
+  { "key": "open-source", "en": "Open Source", "zh": "开源" }
+]
+\`\`\`
+
 ## \`content/list.json\` 注册示例
 
 \`\`\`json
@@ -57,6 +67,7 @@ content/
 
 只有当内容目录和 URL slug 不一致时才需要写 \`path\`。
 例如 \`slug: "zzci-chrome"\` 可以对应到 \`path: "zzci/chrome"\`。
+标签文案定义放在 \`content/tags.json\`，工具条目里只引用 tag key。
 
 ## 常用标签
 
