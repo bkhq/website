@@ -1,18 +1,22 @@
 ---
 import ToolDetailPage from '@/components/ToolDetailPage.astro'
 import { getToolDocSlugs, getToolsJson } from '@/lib/content'
+import { isReservedRootSlug } from '@/lib/routes'
 
 export function getStaticPaths() {
   const toolsData = getToolsJson()
-  const paths: { params: { locale: string, slug: string } }[] = []
+  const paths: { params: { slug: string } }[] = []
 
   for (const item of toolsData.list) {
-    paths.push({ params: { locale: 'zh', slug: item.slug } })
+    if (isReservedRootSlug(item.slug))
+continue
+
+    paths.push({ params: { slug: item.slug } })
 
     const docSlugs = getToolDocSlugs(item.slug)
     for (const docSlug of docSlugs) {
       if (docSlug !== 'index') {
-        paths.push({ params: { locale: 'zh', slug: `${item.slug}/${docSlug}` } })
+        paths.push({ params: { slug: `${item.slug}/${docSlug}` } })
       }
     }
   }
@@ -23,4 +27,4 @@ export function getStaticPaths() {
 const slug = Astro.params.slug!
 ---
 
-<ToolDetailPage locale="zh" slug={slug} />
+<ToolDetailPage locale="en" slug={slug} />

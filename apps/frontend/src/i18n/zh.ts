@@ -50,7 +50,7 @@ export const zh: Translations = {
     usage: '使用方法',
     troubleshooting: '故障排除',
     introduction: '简介',
-    relatedTools: '相关工具',
+    link: '关联',
   },
   submit: {
     title: '投稿创意',

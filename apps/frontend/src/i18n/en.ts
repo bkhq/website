@@ -50,7 +50,7 @@ export const en: Translations = {
     usage: 'Usage',
     troubleshooting: 'Troubleshooting',
     introduction: 'Introduction',
-    relatedTools: 'Related Tools',
+    link: 'Links',
   },
   submit: {
     title: 'Submit Ideas',

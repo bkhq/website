@@ -1,6 +1,6 @@
 export type Locale = 'en' | 'zh'
 
-export type Translations = {
+export interface Translations {
   nav: {
     home: string
     collections: string
@@ -50,7 +50,7 @@ export type Translations = {
     usage: string
     troubleshooting: string
     introduction: string
-    relatedTools: string
+    link: string
   }
   submit: {
     title: string

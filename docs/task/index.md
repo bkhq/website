@@ -1,6 +1,6 @@
 # bkio - Task List
 
-> Updated: 2026-03-07
+> Updated: 2026-03-09
 
 ## Usage
 
@@ -33,3 +33,4 @@ Each task is a single line linking to its detail file. All detailed information 
 - [x] [**REPO-001 Rename workspace and reinitialize git**](REPO-001.md) `P1`
 - [x] [**REPO-002 Move API build output out of src and ignore artifacts**](REPO-002.md) `P1`
 - [x] [**FE-001 迁移前端到 Astro + Content Collections**](FE-001.md) `P1`
+- [x] [**FE-002 调整默认语言无前缀路由并保留保留路径命名空间**](FE-002.md) `P1`

@@ -1,6 +1,7 @@
 import { Github } from 'lucide-react'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { localizePath } from '@/lib/routes'
 
 const translations = {
   en: { submit: 'Submit' },
@@ -13,7 +14,7 @@ export function Header({ locale }: { locale: 'en' | 'zh' }) {
   return (
     <header className="relative z-10">
       <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
-        <a href={`/${locale}/`}>
+        <a href={localizePath(locale, '/')}>
           <img src="/logo.svg" alt="BK" className="h-10 w-10 rounded-lg" />
         </a>
 
@@ -30,7 +31,7 @@ export function Header({ locale }: { locale: 'en' | 'zh' }) {
           <LocaleSwitcher locale={locale} />
           <ThemeToggle locale={locale} />
           <a
-            href={`/${locale}/submit`}
+            href={localizePath(locale, '/sys/submit')}
             className="inline-flex h-8 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-input bg-background px-3 text-sm font-medium shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground"
           >
             {t.submit}

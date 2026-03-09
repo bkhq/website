@@ -6,11 +6,11 @@ import { getToolsJson, txt } from '@/lib/content'
 export function getStaticPaths() {
   const toolsData = getToolsJson()
   return toolsData.categories.map(category => ({
-    params: { locale: 'zh', category: category.key },
+    params: { category: category.key },
   }))
 }
 
-const locale = 'zh' as const
+const locale = 'en' as const
 const categoryKey = Astro.params.category!
 const t = getTranslations(locale)
 const toolsData = getToolsJson()
