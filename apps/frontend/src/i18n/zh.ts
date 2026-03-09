@@ -21,6 +21,8 @@ export const zh: Translations = {
     textCode: '文本 & 代码',
     colors: '颜色',
     converters: '转换器',
+    devTools: '开发工具',
+    containers: '容器',
   },
   card: {
     view: '查看',
@@ -37,7 +39,7 @@ export const zh: Translations = {
     privacy: '隐私政策',
     terms: '服务条款',
     submit: '投稿',
-    copyright: '\u00a9 2026 BK.io',
+    copyright: '© 2026 BK.io',
   },
   theme: {
     light: '浅色',
@@ -48,6 +50,7 @@ export const zh: Translations = {
     usage: '使用方法',
     troubleshooting: '故障排除',
     introduction: '简介',
+    relatedTools: '相关工具',
   },
   submit: {
     title: '投稿创意',

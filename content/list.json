@@ -4,7 +4,8 @@
     { "key": "textCode", "en": "Text & Code", "zh": "文本 & 代码", "badge": { "en": "Text & Code", "zh": "文本 & 代码" } },
     { "key": "colors", "en": "Colors", "zh": "颜色", "badge": { "en": "Colors", "zh": "颜色" } },
     { "key": "converters", "en": "Converters", "zh": "转换器", "badge": { "en": "Converters", "zh": "转换器" } },
-    { "key": "devTools", "en": "Dev Tools", "zh": "开发工具", "badge": { "en": "Dev Tools", "zh": "开发工具" } }
+    { "key": "devTools", "en": "Dev Tools", "zh": "开发工具", "badge": { "en": "Dev Tools", "zh": "开发工具" } },
+    { "key": "containers", "en": "Containers", "zh": "容器", "badge": { "en": "Containers", "zh": "容器" } }
   ],
   "tags": [
     { "key": "open-source", "en": "Open Source", "zh": "开源" },
@@ -12,7 +13,11 @@
     { "key": "desktop", "en": "Desktop", "zh": "桌面端" },
     { "key": "cli", "en": "CLI", "zh": "命令行" },
     { "key": "web", "en": "Web", "zh": "网页" },
-    { "key": "privacy", "en": "Privacy", "zh": "隐私" }
+    { "key": "privacy", "en": "Privacy", "zh": "隐私" },
+    { "key": "docker", "en": "Docker", "zh": "Docker" },
+    { "key": "self-hosted", "en": "Self-Hosted", "zh": "自托管" },
+    { "key": "automation", "en": "Automation", "zh": "自动化" },
+    { "key": "proxy", "en": "Proxy", "zh": "代理" }
   ],
   "featured": ["demo", "bkd"],
   "list": [
@@ -28,6 +33,24 @@
       "category": "devTools",
       "order": 2,
       "tags": ["open-source", "free", "cli", "web"]
+    },
+    {
+      "slug": "zzci-traefik",
+      "category": "containers",
+      "order": 3,
+      "tags": ["open-source", "free", "cli", "web", "docker", "self-hosted", "proxy"]
+    },
+    {
+      "slug": "zzci-chrome",
+      "category": "containers",
+      "order": 4,
+      "tags": ["open-source", "free", "web", "docker", "self-hosted", "automation"]
+    },
+    {
+      "slug": "agent-browser",
+      "category": "devTools",
+      "order": 5,
+      "tags": ["open-source", "free", "cli", "web", "automation"]
     }
   ]
 }

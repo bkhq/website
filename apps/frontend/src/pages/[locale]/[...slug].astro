@@ -10,6 +10,7 @@ import {
   getToolDoc,
   getToolBadge,
   getToolTags,
+  resolveToolLogo,
   txt,
 } from '@/lib/content'
 
@@ -23,17 +24,24 @@ export function getStaticPaths() {
       paths.push({ params: { locale: loc, slug: item.slug } })
 
       const docSlugs = getToolDocSlugs(item.slug)
-      for (const ds of docSlugs) {
-        if (ds !== 'index') {
-          paths.push({
-            params: { locale: loc, slug: `${item.slug}/${ds}` },
-          })
+      for (const docSlug of docSlugs) {
+        if (docSlug !== 'index') {
+          paths.push({ params: { locale: loc, slug: `${item.slug}/${docSlug}` } })
         }
       }
     }
   }
 
   return paths
+}
+
+type RelatedToolCard = {
+  slug: string
+  href: string
+  title: string
+  description: string
+  badge: string
+  logo: ReturnType<typeof resolveToolLogo>
 }
 
 const locale = Astro.params.locale as Locale
@@ -43,9 +51,8 @@ const toolSlug = parts[0]
 const docSlug = parts[1] || 'index'
 
 const t = getTranslations(locale)
-
 const toolsData = getToolsJson()
-const toolEntry = toolsData.list.find((t) => t.slug === toolSlug)
+const toolEntry = toolsData.list.find((item) => item.slug === toolSlug)
 const categoryLabel = toolEntry ? getToolBadge(toolsData, toolEntry.category, locale) : ''
 const toolTags = toolEntry ? getToolTags(toolsData, toolEntry.tags ?? [], locale) : []
 
@@ -56,13 +63,8 @@ const allDocs = await getToolDocs(toolSlug, locale)
 const sidebarDocs = allDocs
   .map((doc) => ({
     slug: doc.slug,
-    href:
-      doc.slug === 'index'
-        ? `/${locale}/${toolSlug}`
-        : `/${locale}/${toolSlug}/${doc.slug}`,
-    title: doc.frontmatter.title
-      ? txt(doc.frontmatter.title, locale)
-      : doc.slug,
+    href: doc.slug === 'index' ? `/${locale}/${toolSlug}` : `/${locale}/${toolSlug}/${doc.slug}`,
+    title: doc.frontmatter.title ? txt(doc.frontmatter.title, locale) : doc.slug,
     order: doc.frontmatter.order ?? 99,
   }))
   .sort((a, b) => a.order - b.order)
@@ -86,13 +88,27 @@ const customLinks = (meta.links ?? []).map((link) => ({
 const authorUrl = meta.addedBy?.url && isSafeUrl(meta.addedBy.url) ? meta.addedBy.url : undefined
 const websiteUrl = meta.website && isSafeUrl(meta.website) ? meta.website : undefined
 const githubUrl = meta.github && isSafeUrl(meta.github) ? meta.github : undefined
+const relatedTools: RelatedToolCard[] = (meta.relatedTools ?? [])
+  .map((relatedSlug) => {
+    const relatedEntry = toolsData.list.find((item) => item.slug === relatedSlug)
+    if (!relatedEntry) return null
+
+    const relatedMeta = getToolMeta(relatedSlug)
+    return {
+      slug: relatedSlug,
+      href: `/${locale}/${relatedSlug}`,
+      title: txt(relatedMeta.title, locale),
+      description: txt(relatedMeta.description, locale),
+      badge: getToolBadge(toolsData, relatedEntry.category, locale),
+      logo: resolveToolLogo(relatedSlug, relatedEntry.logo),
+    }
+  })
+  .filter((item): item is RelatedToolCard => item !== null)
 ---
 
 <Base title={`${txt(meta.title, locale)} - ${pageTitle}`} description={txt(meta.description, locale)} locale={locale}>
   <section class="relative z-10">
     <div class="mx-auto w-full max-w-5xl px-4 pb-14 pt-8 sm:px-6 sm:pt-10 lg:px-8">
-
-      <!-- Tool header -->
       <div class="pb-8 text-center">
         <h1 class="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
           {txt(meta.title, locale)}
@@ -151,16 +167,39 @@ const githubUrl = meta.github && isSafeUrl(meta.github) ? meta.github : undefine
         )}
       </div>
 
-      <!-- Separator dots -->
+      {relatedTools.length > 0 && (
+        <div class="mb-8 rounded-2xl border border-border/50 bg-white/80 p-4 shadow-sm dark:bg-white/[0.03] sm:p-5">
+          <div class="mb-3 text-sm font-semibold text-foreground">{t.toolDetail.relatedTools}</div>
+          <div class="grid gap-3 sm:grid-cols-2">
+            {relatedTools.map((item) => (
+              <a href={item.href} class="rounded-xl border border-border/50 bg-background/60 p-4 transition-colors hover:border-border hover:bg-background">
+                <div class="flex items-start gap-3">
+                  <div class="flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-foreground/5 text-sm font-semibold text-foreground/70">
+                    {item.logo.type === 'svg' ? (
+                      <span class="h-6 w-6" set:html={item.logo.content} />
+                    ) : (
+                      <span>{item.title.charAt(0).toUpperCase()}</span>
+                    )}
+                  </div>
+                  <div class="min-w-0">
+                    <div class="inline-flex rounded-full bg-foreground/5 px-2 py-0.5 text-xs font-medium text-foreground/70">{item.badge}</div>
+                    <div class="mt-2 text-sm font-semibold text-foreground">{item.title}</div>
+                    <p class="mt-1 text-sm leading-6 text-muted-foreground">{item.description}</p>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div class="flex items-center justify-center gap-1.5 py-5">
         <span class="h-1 w-1 rounded-full bg-border"></span>
         <span class="h-1 w-1 rounded-full bg-border"></span>
         <span class="h-1 w-1 rounded-full bg-border"></span>
       </div>
 
-      <!-- Content area -->
       <div class="mt-6 flex items-start justify-center">
-        {/* Desktop sidebar */}
         {sidebarDocs.length > 1 && (
           <aside class="hidden w-[140px] flex-none self-stretch lg:block">
             <nav class="sticky top-28 space-y-0.5 border-r border-border/40 pr-4 text-sm">
@@ -169,9 +208,7 @@ const githubUrl = meta.github && isSafeUrl(meta.github) ? meta.github : undefine
                   href={doc.href}
                   class:list={[
                     'block rounded-md px-2 py-1.5 text-right transition-colors',
-                    doc.slug === docSlug
-                      ? 'font-medium text-foreground'
-                      : 'text-muted-foreground hover:text-foreground',
+                    doc.slug === docSlug ? 'font-medium text-foreground' : 'text-muted-foreground hover:text-foreground',
                   ]}
                 >
                   {doc.title}
@@ -182,7 +219,6 @@ const githubUrl = meta.github && isSafeUrl(meta.github) ? meta.github : undefine
         )}
 
         <div class:list={[sidebarDocs.length > 1 && 'min-w-0 lg:pl-5']}>
-          {/* Mobile doc nav */}
           {sidebarDocs.length > 1 && (
             <nav class="mb-8 flex flex-wrap gap-1.5 lg:hidden">
               {sidebarDocs.map((doc) => (
@@ -190,9 +226,7 @@ const githubUrl = meta.github && isSafeUrl(meta.github) ? meta.github : undefine
                   href={doc.href}
                   class:list={[
                     'rounded-md px-3 py-1.5 text-sm transition-colors',
-                    doc.slug === docSlug
-                      ? 'bg-foreground/5 font-medium text-foreground'
-                      : 'text-muted-foreground hover:bg-foreground/5 hover:text-foreground',
+                    doc.slug === docSlug ? 'bg-foreground/5 font-medium text-foreground' : 'text-muted-foreground hover:bg-foreground/5 hover:text-foreground',
                   ]}
                 >
                   {doc.title}
@@ -201,7 +235,6 @@ const githubUrl = meta.github && isSafeUrl(meta.github) ? meta.github : undefine
             </nav>
           )}
 
-          {/* Article */}
           <article class="prose-article rounded-xl bg-white p-6 shadow-sm dark:bg-white/[0.03] sm:p-8" set:html={htmlContent} />
         </div>
       </div>

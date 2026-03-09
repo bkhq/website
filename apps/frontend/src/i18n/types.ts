@@ -21,6 +21,8 @@ export type Translations = {
     textCode: string
     colors: string
     converters: string
+    devTools: string
+    containers: string
   }
   card: {
     view: string
@@ -48,6 +50,7 @@ export type Translations = {
     usage: string
     troubleshooting: string
     introduction: string
+    relatedTools: string
   }
   submit: {
     title: string

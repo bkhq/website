@@ -1,0 +1,20 @@
+{
+  "title": { "en": "zzci/traefik", "zh": "zzci/traefik" },
+  "description": {
+    "en": "Custom Traefik Docker image with built-in plugins, release bundles, helper scripts, and examples for self-hosted routing.",
+    "zh": "自定义 Traefik Docker 镜像，内置插件、发布包、辅助脚本和自托管入口路由示例。"
+  },
+  "github": "https://github.com/zzci/traefik",
+  "addedAt": "2026-03-09",
+  "addedBy": { "name": "zzci", "url": "https://github.com/zzci" },
+  "links": [
+    {
+      "label": { "en": "Releases", "zh": "发布包" },
+      "url": "https://github.com/zzci/traefik/releases"
+    },
+    {
+      "label": { "en": "Report Issue", "zh": "问题反馈" },
+      "url": "https://github.com/zzci/traefik/issues"
+    }
+  ]
+}

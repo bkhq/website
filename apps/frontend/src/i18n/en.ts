@@ -21,6 +21,8 @@ export const en: Translations = {
     textCode: 'Text & Code',
     colors: 'Colors',
     converters: 'Converters',
+    devTools: 'Dev Tools',
+    containers: 'Containers',
   },
   card: {
     view: 'View',
@@ -37,7 +39,7 @@ export const en: Translations = {
     privacy: 'Privacy Policy',
     terms: 'Terms of Service',
     submit: 'Submit',
-    copyright: '\u00a9 2026 BK.io',
+    copyright: '© 2026 BK.io',
   },
   theme: {
     light: 'Light',
@@ -48,6 +50,7 @@ export const en: Translations = {
     usage: 'Usage',
     troubleshooting: 'Troubleshooting',
     introduction: 'Introduction',
+    relatedTools: 'Related Tools',
   },
   submit: {
     title: 'Submit Ideas',

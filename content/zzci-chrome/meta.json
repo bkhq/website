@@ -1,0 +1,17 @@
+{
+  "title": { "en": "zzci/chrome", "zh": "zzci/chrome" },
+  "description": {
+    "en": "Minimal Chrome-in-Docker image with a browser UI on port 80 and a forwarded DevTools endpoint on port 9222.",
+    "zh": "精简的 Chrome-in-Docker 镜像，在 80 端口提供浏览器界面，并在 9222 端口转发 DevTools 端点。"
+  },
+  "github": "https://github.com/zzci/chrome",
+  "addedAt": "2026-03-09",
+  "addedBy": { "name": "zzci", "url": "https://github.com/zzci" },
+  "relatedTools": ["agent-browser"],
+  "links": [
+    {
+      "label": { "en": "Report Issue", "zh": "问题反馈" },
+      "url": "https://github.com/zzci/chrome/issues"
+    }
+  ]
+}
