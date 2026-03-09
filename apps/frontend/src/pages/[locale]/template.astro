@@ -1,0 +1,365 @@
+---
+import Base from '@/layouts/Base.astro'
+import type { Locale } from '@/i18n'
+import { renderMarkdown } from '@/lib/content'
+
+export function getStaticPaths() {
+  return [{ params: { locale: 'en' } }, { params: { locale: 'zh' } }]
+}
+
+const locale = Astro.params.locale as Locale
+
+const content: Record<Locale, string> = {
+  en: `
+## Tool Template
+
+Use this page as the copyable starter for a custom tool entry.
+
+## Directory Layout
+
+\`\`\`text
+content/
+├── list.json
+└── my-tool/
+    ├── meta.json
+    ├── en.index.md
+    ├── zh.index.md
+    ├── en.installation.md
+    ├── zh.installation.md
+    ├── en.configuration.md
+    ├── zh.configuration.md
+    ├── en.data.md
+    ├── zh.data.md
+    ├── en.faq.md
+    └── zh.faq.md
+\`\`\`
+
+## \`meta.json\`
+
+\`\`\`json
+{
+  "title": { "en": "My Tool", "zh": "我的工具" },
+  "description": {
+    "en": "One-line summary for cards and page headers.",
+    "zh": "用于卡片和页面头部的一句话说明。"
+  },
+  "github": "https://github.com/example/my-tool",
+  "relatedTools": ["agent-browser"]
+}
+\`\`\`
+
+## \`content/list.json\` Entry
+
+\`\`\`json
+{
+  "slug": "my-tool",
+  "category": "devTools",
+  "tags": ["open-source", "free", "cli", "web"]
+}
+\`\`\`
+
+## Available Categories
+
+- \`images\`
+- \`textCode\`
+- \`colors\`
+- \`converters\`
+- \`devTools\`
+- \`containers\`
+
+## Common Tags
+
+- \`open-source\`
+- \`free\`
+- \`desktop\`
+- \`cli\`
+- \`web\`
+- \`privacy\`
+- \`docker\`
+- \`self-hosted\`
+- \`automation\`
+- \`proxy\`
+
+## Starter Pages
+
+### \`en.index.md\`
+
+\`\`\`markdown
+---
+title:
+  en: Introduction
+  zh: 简介
+order: 0
+---
+
+## Overview
+
+Describe what the tool does, who it is for, and why it matters.
+
+## Related Workflows
+
+Mention adjacent tools with placeholders like [[agent-browser]] or [[zzci-chrome|zzci/chrome]].
+\`\`\`
+
+### \`en.installation.md\`
+
+\`\`\`markdown
+---
+title:
+  en: Installation
+  zh: 安装
+order: 1
+---
+
+## Installation
+
+Add the shortest working setup path.
+\`\`\`
+
+### \`en.configuration.md\`
+
+\`\`\`markdown
+---
+title:
+  en: Configuration
+  zh: 配置
+order: 2
+---
+
+## Configuration
+
+List the switches, ports, files, or environment variables people need.
+\`\`\`
+
+### \`en.data.md\`
+
+\`\`\`markdown
+---
+title:
+  en: Data & Storage
+  zh: 数据说明
+order: 3
+---
+
+## Data & Storage
+
+Explain what state is persisted, what is ephemeral, and what should be backed up.
+\`\`\`
+
+### \`en.faq.md\`
+
+\`\`\`markdown
+---
+title:
+  en: FAQ
+  zh: 常见问题
+order: 4
+---
+
+## FAQ
+
+Add the real questions people will ask after trying the tool.
+\`\`\`
+
+Duplicate the same files with \`zh.*.md\` and translate the body text.
+
+## Placeholder Links
+
+Use placeholders instead of hardcoding locale-specific paths:
+
+\`\`\`text
+[[agent-browser]]
+[[zzci-chrome|zzci/chrome]]
+[[bkd/data|Data & Storage]]
+\`\`\`
+
+The renderer converts them into the current locale automatically.
+`,
+  zh: `
+## 工具模板
+
+这个页面就是后续新增自定义工具时可直接照抄的 starter template。
+
+## 目录结构
+
+\`\`\`text
+content/
+├── list.json
+└── my-tool/
+    ├── meta.json
+    ├── en.index.md
+    ├── zh.index.md
+    ├── en.installation.md
+    ├── zh.installation.md
+    ├── en.configuration.md
+    ├── zh.configuration.md
+    ├── en.data.md
+    ├── zh.data.md
+    ├── en.faq.md
+    └── zh.faq.md
+\`\`\`
+
+## \`meta.json\`
+
+\`\`\`json
+{
+  "title": { "en": "My Tool", "zh": "我的工具" },
+  "description": {
+    "en": "One-line summary for cards and page headers.",
+    "zh": "用于卡片和页面头部的一句话说明。"
+  },
+  "github": "https://github.com/example/my-tool",
+  "relatedTools": ["agent-browser"]
+}
+\`\`\`
+
+## \`content/list.json\` 注册示例
+
+\`\`\`json
+{
+  "slug": "my-tool",
+  "category": "devTools",
+  "tags": ["open-source", "free", "cli", "web"]
+}
+\`\`\`
+
+## 可用分类
+
+- \`images\`
+- \`textCode\`
+- \`colors\`
+- \`converters\`
+- \`devTools\`
+- \`containers\`
+
+## 常用标签
+
+- \`open-source\`
+- \`free\`
+- \`desktop\`
+- \`cli\`
+- \`web\`
+- \`privacy\`
+- \`docker\`
+- \`self-hosted\`
+- \`automation\`
+- \`proxy\`
+
+## 页面骨架
+
+### \`en.index.md\`
+
+\`\`\`markdown
+---
+title:
+  en: Introduction
+  zh: 简介
+order: 0
+---
+
+## Overview
+
+Describe what the tool does, who it is for, and why it matters.
+
+## Related Workflows
+
+Mention adjacent tools with placeholders like [[agent-browser]] or [[zzci-chrome|zzci/chrome]].
+\`\`\`
+
+### \`en.installation.md\`
+
+\`\`\`markdown
+---
+title:
+  en: Installation
+  zh: 安装
+order: 1
+---
+
+## Installation
+
+Add the shortest working setup path.
+\`\`\`
+
+### \`en.configuration.md\`
+
+\`\`\`markdown
+---
+title:
+  en: Configuration
+  zh: 配置
+order: 2
+---
+
+## Configuration
+
+List the switches, ports, files, or environment variables people need.
+\`\`\`
+
+### \`en.data.md\`
+
+\`\`\`markdown
+---
+title:
+  en: Data & Storage
+  zh: 数据说明
+order: 3
+---
+
+## Data & Storage
+
+Explain what state is persisted, what is ephemeral, and what should be backed up.
+\`\`\`
+
+### \`en.faq.md\`
+
+\`\`\`markdown
+---
+title:
+  en: FAQ
+  zh: 常见问题
+order: 4
+---
+
+## FAQ
+
+Add the real questions people will ask after trying the tool.
+\`\`\`
+
+再复制出对应的 \`zh.*.md\` 并翻译正文。
+
+## 占位符链接
+
+不要手写 /en/... 或 /zh/...，直接写：
+
+\`\`\`text
+[[agent-browser]]
+[[zzci-chrome|zzci/chrome]]
+[[bkd/data|数据说明]]
+\`\`\`
+
+渲染层会自动替换成当前语言的站内链接。
+`,
+}
+
+const htmlContent = await renderMarkdown(content[locale], locale)
+---
+
+<Base title={locale === 'zh' ? '工具模板' : 'Tool Template'} description={locale === 'zh' ? '自定义工具内容模板与占位符说明。' : 'Starter template and placeholder guide for custom tool entries.'} locale={locale}>
+  <section class="relative z-10">
+    <div class="mx-auto w-full max-w-5xl px-4 pb-14 pt-8 sm:px-6 sm:pt-10 lg:px-8">
+      <div class="pb-8 text-center">
+        <h1 class="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+          {locale === 'zh' ? '工具模板' : 'Tool Template'}
+        </h1>
+        <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          {locale === 'zh' ? '用于新增自定义工具的最小模板、分类标签说明，以及站内占位符链接写法。' : 'A copyable starter for custom tool entries, including category/tag guidance and locale-safe placeholder links.'}
+        </p>
+      </div>
+
+      <div class="flex items-start justify-center">
+        <article class="prose-article rounded-xl bg-white p-6 shadow-sm dark:bg-white/[0.03] sm:p-8" set:html={htmlContent} />
+      </div>
+    </div>
+  </section>
+</Base>

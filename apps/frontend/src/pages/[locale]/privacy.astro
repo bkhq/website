@@ -64,7 +64,7 @@ If you have questions about this Privacy Policy, please open an issue on our [Gi
 `,
 }
 
-const htmlContent = await renderMarkdown(content[locale])
+const htmlContent = await renderMarkdown(content[locale], locale)
 ---
 
 <Base title={t.footer.privacy} locale={locale}>

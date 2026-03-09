@@ -58,7 +58,7 @@ Worktrees from completed sessions can be safely removed:
 rm -rf worktrees/
 ```
 
-BKD will recreate worktrees as needed. See the [Data & Storage](/en/bkd/data) page for more cleanup options.
+BKD will recreate worktrees as needed. See the [[bkd/data|Data & Storage]] page for more cleanup options.
 
 ### Does BKD work behind a proxy?
 

@@ -1,0 +1,22 @@
+{
+  "title": { "en": "agent-browser", "zh": "agent-browser" },
+  "description": {
+    "en": "Browser automation CLI from Vercel Labs with semantic snapshots, session reuse, and CDP attach mode for live browsers.",
+    "zh": "Vercel Labs 提供的浏览器自动化 CLI，支持语义快照、会话复用，以及连接真实浏览器的 CDP 模式。"
+  },
+  "website": "https://agent-browser.dev",
+  "github": "https://github.com/vercel-labs/agent-browser",
+  "addedAt": "2026-03-09",
+  "addedBy": { "name": "vercel-labs", "url": "https://github.com/vercel-labs" },
+  "relatedTools": ["zzci-chrome"],
+  "links": [
+    {
+      "label": { "en": "Website", "zh": "官网" },
+      "url": "https://agent-browser.dev"
+    },
+    {
+      "label": { "en": "Report Issue", "zh": "问题反馈" },
+      "url": "https://github.com/vercel-labs/agent-browser/issues"
+    }
+  ]
+}

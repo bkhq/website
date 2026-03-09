@@ -21,6 +21,7 @@ export type ToolMeta = {
   addedAt?: string
   addedBy?: { name: string; url?: string }
   links?: ToolLink[]
+  relatedTools?: string[]
 }
 
 export type ToolListItem = {
@@ -51,57 +52,6 @@ export type ToolsJson = {
   list: ToolListItem[]
 }
 
-/** Sanitize SVG content by stripping dangerous elements and attributes */
-function sanitizeSvg(svg: string): string {
-  const dangerousTags = /<\s*\/?\s*(script|foreignObject|iframe|object|embed|applet|form|input|textarea|button|select|meta|link|style)\b[^>]*>/gi
-  let cleaned = svg.replace(dangerousTags, '')
-  cleaned = cleaned.replace(/\bon\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
-  cleaned = cleaned.replace(/href\s*=\s*"javascript:[^"]*"/gi, '')
-  cleaned = cleaned.replace(/href\s*=\s*'javascript:[^']*'/gi, '')
-  cleaned = cleaned.replace(/xlink:href\s*=\s*"javascript:[^"]*"/gi, '')
-  cleaned = cleaned.replace(/xlink:href\s*=\s*'javascript:[^']*'/gi, '')
-  return cleaned
-}
-
-/** Validate that a slug does not contain path traversal sequences */
-function isValidSlug(slug: string): boolean {
-  return !slug.includes('..') && !slug.includes('\0') && !/[/\\]/.test(slug)
-}
-
-/** Resolve logo: if file exists in content/{slug}/, return its content; otherwise treat as lucide icon name; undefined = no logo */
-export function resolveToolLogo(slug: string, logo?: string): { type: 'icon'; name: string } | { type: 'svg'; content: string } | { type: 'none' } {
-  if (!logo) return { type: 'none' }
-  if (!isValidSlug(slug) || (logo.includes('.') && !isValidSlug(logo.replace('.svg', '')))) {
-    return { type: 'none' }
-  }
-  if (logo.includes('.')) {
-    try {
-      const logoPath = resolve(CONTENT_ROOT, slug, logo)
-      if (!logoPath.startsWith(resolve(CONTENT_ROOT))) return { type: 'none' }
-      const content = readFileSync(logoPath, 'utf-8')
-      return { type: 'svg', content: sanitizeSvg(content) }
-    } catch {
-      return { type: 'icon', name: 'image' }
-    }
-  }
-  return { type: 'icon', name: logo }
-}
-
-/** Get localized tag labels for a tool */
-export function getToolTags(toolsData: ToolsJson, tagKeys: string[], locale: Locale): { key: string; label: string }[] {
-  return tagKeys.map((key) => {
-    const tag = toolsData.tags.find((t) => t.key === key)
-    return { key, label: tag ? txt(tag, locale) : key }
-  })
-}
-
-/** Get badge for a tool by looking up its category */
-export function getToolBadge(toolsData: ToolsJson, category: string, locale: Locale): string {
-  const cat = toolsData.categories.find((c) => c.key === category)
-  if (!cat) return category
-  return txt(cat.badge, locale)
-}
-
 export type DocFrontmatter = {
   title?: I18nText
   order?: number
@@ -115,15 +65,15 @@ export type ToolDoc = {
 }
 
 const CONTENT_ROOT = join(process.cwd(), '../../content')
+const PLACEHOLDER_LINK_RE = /\[\[([^|\]\n]+)(?:\|([^\]\n]+))?\]\]/g
 
-// Shiki highlighter singleton
 let highlighterPromise: ReturnType<typeof createHighlighter> | null = null
 
 function getHighlighter() {
   if (!highlighterPromise) {
     highlighterPromise = createHighlighter({
       themes: ['github-light', 'github-dark'],
-      langs: ['bash', 'typescript', 'javascript', 'json', 'yaml', 'html', 'css', 'markdown', 'shell'],
+      langs: ['bash', 'typescript', 'javascript', 'json', 'yaml', 'html', 'css', 'markdown', 'shell', 'text'],
     })
   }
   return highlighterPromise
@@ -133,7 +83,13 @@ function escapeHtml(str: string): string {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
 
-/** Strip dangerous HTML tags from rendered markdown output */
+function escapeAttribute(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 function sanitizeHtml(html: string): string {
   const dangerousTags = /<\s*\/?\s*(script|iframe|object|embed|applet|form|input|textarea|button|select|meta|link)\b[^>]*>/gi
   let cleaned = html.replace(dangerousTags, '')
@@ -145,8 +101,106 @@ function sanitizeHtml(html: string): string {
   return cleaned
 }
 
-export async function renderMarkdown(content: string): Promise<string> {
+function sanitizeSvg(svg: string): string {
+  const dangerousTags = /<\s*\/?\s*(script|foreignObject|iframe|object|embed|applet|form|input|textarea|button|select|meta|link|style)\b[^>]*>/gi
+  let cleaned = svg.replace(dangerousTags, '')
+  cleaned = cleaned.replace(/\bon\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+  cleaned = cleaned.replace(/href\s*=\s*"javascript:[^"]*"/gi, '')
+  cleaned = cleaned.replace(/href\s*=\s*'javascript:[^']*'/gi, '')
+  cleaned = cleaned.replace(/xlink:href\s*=\s*"javascript:[^"]*"/gi, '')
+  cleaned = cleaned.replace(/xlink:href\s*=\s*'javascript:[^']*'/gi, '')
+  return cleaned
+}
+
+function isValidSlug(slug: string): boolean {
+  return !slug.includes('..') && !slug.includes('\0') && !/[/\\]/.test(slug)
+}
+
+function replaceLinkPlaceholders(content: string): string {
+  const segments = content.split(/(```[\s\S]*?```)/g)
+  return segments
+    .map((segment) => {
+      if (segment.startsWith('```')) return segment
+      return segment.replace(PLACEHOLDER_LINK_RE, (_match, rawTarget: string, rawLabel?: string) => {
+        const target = rawTarget.trim().replace(/^\/+/, '')
+        if (!target) return rawLabel?.trim() || ''
+        const label = (rawLabel ?? rawTarget).trim()
+        return `[${label}](/${target})`
+      })
+    })
+    .join('')
+}
+
+function buildLocalizedPath(path: string, locale: Locale): string {
+  if (!path || path === '/') return `/${locale}`
+  return `/${locale}${path.startsWith('/') ? path : `/${path}`}`
+}
+
+function localizeInternalHref(href: string, locale: Locale): string {
+  if (!href.startsWith('/') || href.startsWith('//')) return href
+  if (href.startsWith('/api/') || href.startsWith('/assets/') || href.startsWith('/_')) return href
+
+  const suffixIndex = href.search(/[?#]/)
+  const path = suffixIndex === -1 ? href : href.slice(0, suffixIndex)
+  const suffix = suffixIndex === -1 ? '' : href.slice(suffixIndex)
+  const segments = path.split('/').filter(Boolean)
+  const lastSegment = segments.at(-1) ?? ''
+
+  if (lastSegment.includes('.')) return href
+
+  if (segments[0] === 'en' || segments[0] === 'zh') {
+    const rest = segments.slice(1)
+    const localized = buildLocalizedPath(rest.length > 0 ? `/${rest.join('/')}` : '/', locale)
+    return `${localized}${suffix}`
+  }
+
+  return `${buildLocalizedPath(path, locale)}${suffix}`
+}
+
+function rewriteInternalLinks(html: string, locale: Locale): string {
+  return html.replace(/href=(['"])([^'"]+)\1/g, (match, quote: string, href: string) => {
+    const localized = localizeInternalHref(href, locale)
+    if (localized === href) return match
+    return `href=${quote}${escapeAttribute(localized)}${quote}`
+  })
+}
+
+export function resolveToolLogo(slug: string, logo?: string): { type: 'icon'; name: string } | { type: 'svg'; content: string } | { type: 'none' } {
+  if (!logo) return { type: 'none' }
+  if (!isValidSlug(slug) || (logo.includes('.') && !isValidSlug(logo.replace('.svg', '')))) {
+    return { type: 'none' }
+  }
+
+  if (logo.includes('.')) {
+    try {
+      const logoPath = resolve(CONTENT_ROOT, slug, logo)
+      if (!logoPath.startsWith(resolve(CONTENT_ROOT))) return { type: 'none' }
+      const content = readFileSync(logoPath, 'utf-8')
+      return { type: 'svg', content: sanitizeSvg(content) }
+    } catch {
+      return { type: 'icon', name: 'image' }
+    }
+  }
+
+  return { type: 'icon', name: logo }
+}
+
+export function getToolTags(toolsData: ToolsJson, tagKeys: string[], locale: Locale): { key: string; label: string }[] {
+  return tagKeys.map((key) => {
+    const tag = toolsData.tags.find((item) => item.key === key)
+    return { key, label: tag ? txt(tag, locale) : key }
+  })
+}
+
+export function getToolBadge(toolsData: ToolsJson, category: string, locale: Locale): string {
+  const categoryItem = toolsData.categories.find((item) => item.key === category)
+  if (!categoryItem) return category
+  return txt(categoryItem.badge, locale)
+}
+
+export async function renderMarkdown(content: string, locale?: Locale): Promise<string> {
   const highlighter = await getHighlighter()
+  const prepared = replaceLinkPlaceholders(content)
 
   const marked = new Marked({
     renderer: {
@@ -175,8 +229,9 @@ export async function renderMarkdown(content: string): Promise<string> {
     },
   })
 
-  const raw = await marked.parse(content) as string
-  return sanitizeHtml(raw)
+  const raw = await (marked.parse(prepared) as Promise<string> | string)
+  const sanitized = sanitizeHtml(raw as string)
+  return locale ? rewriteInternalLinks(sanitized, locale) : sanitized
 }
 
 export function getToolsJson(): ToolsJson {
@@ -191,11 +246,11 @@ export function getToolMeta(slug: string): ToolMeta {
     return {
       title: { en: slug, zh: slug },
       description: { en: '', zh: '' },
+      relatedTools: [],
     }
   }
 }
 
-/** Parse locale prefix from filename: "en.index.md" → { locale: "en", docSlug: "index" }, "index.md" → { locale: null, docSlug: "index" } */
 function parseDocFilename(filename: string): { locale: string | null; docSlug: string } {
   const name = filename.replace('.md', '')
   const match = name.match(/^(en|zh)\.(.+)$/)
@@ -203,14 +258,13 @@ function parseDocFilename(filename: string): { locale: string | null; docSlug: s
   return { locale: null, docSlug: name }
 }
 
-/** Sync: list doc slugs only (for getStaticPaths) */
 export function getToolDocSlugs(slug: string): string[] {
   try {
     const toolDir = join(CONTENT_ROOT, slug)
-    const files = readdirSync(toolDir).filter((f) => f.endsWith('.md'))
+    const files = readdirSync(toolDir).filter((filename) => filename.endsWith('.md'))
     const slugs = new Set<string>()
-    for (const f of files) {
-      slugs.add(parseDocFilename(f).docSlug)
+    for (const filename of files) {
+      slugs.add(parseDocFilename(filename).docSlug)
     }
     return [...slugs]
   } catch {
@@ -221,44 +275,39 @@ export function getToolDocSlugs(slug: string): string[] {
 export async function getToolDocs(slug: string, locale?: Locale): Promise<ToolDoc[]> {
   let files: string[]
   const toolDir = join(CONTENT_ROOT, slug)
+
   try {
-    files = readdirSync(toolDir).filter((f) => f.endsWith('.md'))
+    files = readdirSync(toolDir).filter((filename) => filename.endsWith('.md'))
   } catch {
     return []
   }
 
-  // Group files by docSlug, preferring locale-prefixed files
   const docMap = new Map<string, string>()
-  for (const f of files) {
-    const { locale: fileLocale, docSlug } = parseDocFilename(f)
+  for (const filename of files) {
+    const { locale: fileLocale, docSlug } = parseDocFilename(filename)
     if (fileLocale === null && !docMap.has(docSlug)) {
-      // Non-prefixed file: use as fallback
-      docMap.set(docSlug, f)
+      docMap.set(docSlug, filename)
     } else if (locale && fileLocale === locale) {
-      // Locale-prefixed file matching current locale: always prefer
-      docMap.set(docSlug, f)
+      docMap.set(docSlug, filename)
     }
   }
 
   return Promise.all(
-    [...docMap.entries()].map(async ([docSlug, f]) => {
-      const raw = readFileSync(join(toolDir, f), 'utf-8')
+    [...docMap.entries()].map(async ([docSlug, filename]) => {
+      const raw = readFileSync(join(toolDir, filename), 'utf-8')
       const { data, content } = matter(raw)
       return {
         slug: docSlug,
         frontmatter: data as DocFrontmatter,
         content,
-        html: await renderMarkdown(content),
+        html: await renderMarkdown(content, locale ?? 'en'),
       }
     }),
   )
 }
 
 export async function getToolDoc(toolSlug: string, docSlug: string, locale?: Locale) {
-  // Try locale-prefixed file first, then fallback to non-prefixed
-  const candidates = locale
-    ? [`${locale}.${docSlug}.md`, `${docSlug}.md`]
-    : [`${docSlug}.md`]
+  const candidates = locale ? [`${locale}.${docSlug}.md`, `${docSlug}.md`] : [`${docSlug}.md`]
 
   for (const filename of candidates) {
     try {
@@ -268,7 +317,7 @@ export async function getToolDoc(toolSlug: string, docSlug: string, locale?: Loc
       return {
         data: data as DocFrontmatter,
         content,
-        html: await renderMarkdown(content),
+        html: await renderMarkdown(content, locale ?? 'en'),
       }
     } catch {
       continue
