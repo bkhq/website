@@ -15,14 +15,8 @@ export const en: Translations = {
     subtitle: 'Discover tools for modern builders. Ship faster.',
     searchPlaceholder: 'Search...',
   },
-  categories: {
+  filters: {
     all: 'All',
-    images: 'Images',
-    textCode: 'Text & Code',
-    colors: 'Colors',
-    converters: 'Converters',
-    devTools: 'Dev Tools',
-    containers: 'Containers',
   },
   card: {
     view: 'View',

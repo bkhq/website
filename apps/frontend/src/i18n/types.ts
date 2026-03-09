@@ -15,14 +15,8 @@ export interface Translations {
     subtitle: string
     searchPlaceholder: string
   }
-  categories: {
+  filters: {
     all: string
-    images: string
-    textCode: string
-    colors: string
-    converters: string
-    devTools: string
-    containers: string
   }
   card: {
     view: string

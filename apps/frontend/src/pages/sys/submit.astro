@@ -21,8 +21,9 @@ If you want to add a tool manually, start from the [Template Guide →](/templat
 # 1. Fork the repo on GitHub
 # 2. Clone your fork
 # 3. Add content/<your-slug>/
-# 4. Register the slug in content/list.json
-# 5. Commit, push, and open a Pull Request
+# 4. Add tag labels in content/tags.json if needed
+# 5. Register the slug in content/list.json
+# 6. Commit, push, and open a Pull Request
 
 git clone https://github.com/<your-username>/website.git
 cd website
@@ -33,6 +34,7 @@ mkdir -p content/my-tool
 
 \`\`\`text
 content/
+├── tags.json
 ├── list.json
 └── my-tool/
     ├── meta.json
@@ -52,6 +54,7 @@ content/
 
 - Keep the slug URL-safe. Use \`zzci-chrome\`, not \`zzci/chrome\`.
 - Put display names such as \`zzci/chrome\` in \`meta.json\`.
+- Add new tag label definitions to \`content/tags.json\`; use their keys in \`content/list.json\`.
 - Use placeholders like \`[[agent-browser]]\` or \`[[bkd/data|Data & Storage]]\` for internal links. They are localized automatically.
 - Add \`link\` in \`meta.json\` if this tool should link to another entry.
 `

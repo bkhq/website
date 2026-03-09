@@ -4,7 +4,6 @@ import type { Locale } from '@/i18n'
 import { getTranslations } from '@/i18n'
 import Base from '@/layouts/Base.astro'
 import {
-  getToolBadge,
   getToolMeta,
   getToolTags,
   getToolsJson,
@@ -16,7 +15,6 @@ interface Props {
   locale: Locale
   metaTitle?: string
   metaDescription?: string
-  initialCategory?: string
   initialTag?: string
   detectLocale?: boolean
 }
@@ -25,7 +23,6 @@ const {
   locale,
   metaTitle,
   metaDescription,
-  initialCategory,
   initialTag,
   detectLocale = false,
 } = Astro.props
@@ -36,14 +33,12 @@ const toolsData = getToolsJson()
 const toolItems = toolsData.list
   .sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity))
   .map((item) => {
-    const meta = getToolMeta(item.slug)
-    const logo = resolveToolLogo(item.slug, item.logo)
+    const meta = getToolMeta(item.slug, toolsData)
+    const logo = resolveToolLogo(item.slug, item.logo, toolsData)
     const title = txt(meta.title, locale)
 
     return {
       slug: item.slug,
-      category: item.category,
-      badge: getToolBadge(toolsData, item.category, locale),
       logo: logo.type === 'icon' ? item.logo! : logo.type === 'svg' ? 'custom' : '',
       logoSvg: logo.type === 'svg' ? logo.content : undefined,
       order: item.order,
@@ -52,11 +47,6 @@ const toolItems = toolsData.list
       tags: getToolTags(toolsData, item.tags ?? [], locale),
     }
   })
-
-const categories = toolsData.categories.map(cat => ({
-  key: cat.key,
-  label: txt(cat, locale),
-}))
 
 const allTags = toolsData.tags.map(tag => ({
   key: tag.key,
@@ -84,13 +74,11 @@ const allTags = toolsData.tags.map(tag => ({
         client:load
         locale={locale}
         tools={toolItems}
-        categories={categories}
         allTags={allTags}
-        initialCategory={initialCategory}
         initialTag={initialTag}
         translations={{
           searchPlaceholder: t.hero.searchPlaceholder,
-          all: t.categories.all,
+          all: t.filters.all,
           view: t.card.view,
           noResults: t.card.noResults,
           tags: t.card.tags,

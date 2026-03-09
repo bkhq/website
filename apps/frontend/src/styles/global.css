@@ -260,16 +260,12 @@
   background: transparent;
   color: var(--muted-foreground);
   cursor: pointer;
-  opacity: 0;
+  opacity: 1;
   transition:
     opacity 0.15s,
     background-color 0.15s,
     border-color 0.15s;
   z-index: 2;
-}
-
-.prose-article .code-block:hover .code-copy-btn {
-  opacity: 1;
 }
 
 .prose-article .code-block .code-copy-btn:hover {

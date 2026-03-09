@@ -7,7 +7,6 @@ export const RESERVED_ROOT_SEGMENTS = new Set([
   'zh',
   'sys',
   'tags',
-  'category',
   'link',
   'template',
 ])

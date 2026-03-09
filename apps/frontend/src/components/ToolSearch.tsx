@@ -27,19 +27,12 @@ interface ToolTag {
 
 interface ToolItem {
   slug: string
-  category: string
-  badge: string
   logo: string
   logoSvg?: string
   order: number
   title: string
   description: string
   tags?: ToolTag[]
-}
-
-interface Category {
-  key: string
-  label: string
 }
 
 const iconMap: Record<string, LucideIcon> = {
@@ -56,9 +49,7 @@ const PAGE_SIZE = 12
 interface Props {
   locale: Locale
   tools: ToolItem[]
-  categories: Category[]
   allTags: ToolTag[]
-  initialCategory?: string
   initialTag?: string
   translations: {
     searchPlaceholder: string
@@ -75,27 +66,12 @@ interface Props {
   }
 }
 
-export function ToolSearch({ locale, tools, categories, allTags, initialCategory, initialTag, translations }: Props) {
+export function ToolSearch({ locale, tools, allTags, initialTag, translations }: Props) {
   const [query, setQuery] = useState('')
   const [page, setPage] = useState(1)
-  const [activeCategory, setActiveCategory] = useState(initialCategory ?? 'all')
   const [activeTag, setActiveTag] = useState(initialTag ?? '')
 
   const normalizedQuery = query.trim().toLowerCase()
-
-  const allCategories: Category[] = [
-    { key: 'all', label: translations.all },
-    ...categories,
-  ]
-
-  const categoryCounts = useMemo(() => {
-    const counts = new Map<string, number>()
-    counts.set('all', tools.length)
-    for (const cat of categories) {
-      counts.set(cat.key, tools.filter(t => t.category === cat.key).length)
-    }
-    return counts
-  }, [tools, categories])
 
   const tagCounts = useMemo(() => {
     const counts = new Map<string, number>()
@@ -107,17 +83,15 @@ export function ToolSearch({ locale, tools, categories, allTags, initialCategory
 
   const filteredTools = useMemo(() => {
     return tools.filter((tool) => {
-      const matchesCategory =
-        activeCategory === 'all' || tool.category === activeCategory
       const matchesTag =
         activeTag === '' || tool.tags?.some(t => t.key === activeTag)
       const searchText =
-        `${tool.title} ${tool.description} ${tool.badge} ${(tool.tags ?? []).map(t => t.label).join(' ')}`.toLowerCase()
+        `${tool.title} ${tool.description} ${(tool.tags ?? []).map(t => t.label).join(' ')}`.toLowerCase()
       const matchesQuery =
         normalizedQuery.length === 0 || searchText.includes(normalizedQuery)
-      return matchesCategory && matchesTag && matchesQuery
+      return matchesTag && matchesQuery
     })
-  }, [tools, activeCategory, activeTag, normalizedQuery])
+  }, [tools, activeTag, normalizedQuery])
 
   const totalPages = Math.max(1, Math.ceil(filteredTools.length / PAGE_SIZE))
   const currentPage = Math.min(page, totalPages)
@@ -131,14 +105,6 @@ export function ToolSearch({ locale, tools, categories, allTags, initialCategory
     setPage(1)
   }, [normalizedQuery])
 
-  function handleCategoryChange(key: string) {
-    setActiveCategory(key)
-    setActiveTag('')
-    setPage(1)
-    const url = key === 'all' ? localizePath(locale, '/') : localizePath(locale, `/category/${key}`)
-    window.history.replaceState(null, '', url)
-  }
-
   function handleTagChange(key: string) {
     const newTag = activeTag === key ? '' : key
     setActiveTag(newTag)
@@ -146,10 +112,7 @@ export function ToolSearch({ locale, tools, categories, allTags, initialCategory
     if (newTag) {
       window.history.replaceState(null, '', localizePath(locale, `/tags/${newTag}`))
     } else {
-      const url = activeCategory === 'all' ?
-          localizePath(locale, '/') :
-          localizePath(locale, `/category/${activeCategory}`)
-      window.history.replaceState(null, '', url)
+      window.history.replaceState(null, '', localizePath(locale, '/'))
     }
   }
 
@@ -166,32 +129,26 @@ export function ToolSearch({ locale, tools, categories, allTags, initialCategory
         />
       </div>
 
-      <div className="mt-8 flex flex-wrap items-center justify-center gap-2 text-sm">
-        {allCategories.map(cat => (
+      {allTags.length > 0 && (
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-1.5 text-sm">
           <Button
-            key={cat.key}
             size="default"
-            variant={activeCategory === cat.key ? 'default' : 'outline'}
+            variant={activeTag === '' ? 'default' : 'outline'}
             className="rounded-full px-3"
-            onClick={() => handleCategoryChange(cat.key)}
+            onClick={() => handleTagChange('')}
           >
-            <span className="text-[13px]">{cat.label}</span>
+            <span className="text-[13px]">{translations.all}</span>
             <Badge
-              variant={activeCategory === cat.key ? 'secondary' : 'outline'}
+              variant={activeTag === '' ? 'secondary' : 'outline'}
               className={cn(
                 'min-w-5 justify-center px-1.5 py-0 text-[10px]',
-                activeCategory === cat.key &&
+                activeTag === '' &&
                 'border-transparent bg-white/15 text-white dark:bg-white/10',
               )}
             >
-              {categoryCounts.get(cat.key)}
+              {tools.length}
             </Badge>
           </Button>
-        ))}
-      </div>
-
-      {allTags.length > 0 && (
-        <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5 text-sm">
           <Tag className="h-3.5 w-3.5 text-muted-foreground/50" />
           {allTags.map((tag) => {
             const count = tagCounts.get(tag.key) ?? 0
@@ -264,10 +221,7 @@ export function ToolSearch({ locale, tools, categories, allTags, initialCategory
                         </div>
                         <div className="mt-auto flex items-center justify-between gap-2">
                           <div className="flex min-w-0 flex-wrap items-center gap-1">
-                            <span className="text-xs text-muted-foreground/70">
-                              {tool.badge}
-                            </span>
-                            {tool.tags?.slice(0, 3).map(tag => (
+                            {tool.tags?.slice(0, 4).map(tag => (
                               <span
                                 key={tag.key}
                                 className="rounded-full bg-foreground/5 px-1.5 py-px text-[10px] text-muted-foreground/60"

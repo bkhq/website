@@ -13,7 +13,7 @@ continue
 
     paths.push({ params: { slug: item.slug } })
 
-    const docSlugs = getToolDocSlugs(item.slug)
+    const docSlugs = getToolDocSlugs(item.slug, toolsData)
     for (const docSlug of docSlugs) {
       if (docSlug !== 'index') {
         paths.push({ params: { slug: `${item.slug}/${docSlug}` } })

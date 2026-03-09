@@ -25,8 +25,9 @@ const content = String.raw`
 # 1. 在 GitHub 上 Fork 仓库
 # 2. 克隆你的 Fork
 # 3. 添加 content/<your-slug>/
-# 4. 在 content/list.json 里注册 slug
-# 5. 提交、推送并创建 Pull Request
+# 4. 如果需要，先在 content/tags.json 里补标签文案
+# 5. 在 content/list.json 里注册 slug
+# 6. 提交、推送并创建 Pull Request
 
 git clone https://github.com/<your-username>/website.git
 cd website
@@ -37,6 +38,7 @@ mkdir -p content/my-tool
 
 \`\`\`text
 content/
+├── tags.json
 ├── list.json
 └── my-tool/
     ├── meta.json
@@ -55,6 +57,7 @@ content/
 ## 说明
 
 - slug 必须是 URL 安全格式，像 \`zzci/chrome\` 这样的展示名应该写进 \`meta.json\`，slug 则用 \`zzci-chrome\`。
+- 新标签的文案定义写在 \`content/tags.json\`，工具条目里只引用对应的 tag key。
 - 文档里的站内链接用 \`[[agent-browser]]\` 或 \`[[bkd/data|数据说明]]\` 这种占位符写法，渲染时会自动按语言切换。
 - 如果两个工具需要互相关联，可以在 \`meta.json\` 里添加 \`link\`。
 `

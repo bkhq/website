@@ -27,7 +27,7 @@ export interface ToolMeta {
 
 export interface ToolListItem {
   slug: string
-  category: string
+  path?: string
   logo?: string
   order?: number
   tags?: string[]
@@ -39,15 +39,12 @@ export interface TagItem {
   zh: string
 }
 
-export interface CategoryItem {
-  key: string
-  en: string
-  zh: string
-  badge: { en: string, zh: string }
+interface ToolListJson {
+  featured: string[]
+  list: ToolListItem[]
 }
 
 export interface ToolsJson {
-  categories: CategoryItem[]
   tags: TagItem[]
   featured: string[]
   list: ToolListItem[]
@@ -117,6 +114,24 @@ function isValidSlug(slug: string): boolean {
   return !slug.includes('..') && !slug.includes('\0') && !/[/\\]/.test(slug)
 }
 
+function isSafeContentPath(path: string): boolean {
+  if (!path || path.includes('\0'))
+    return false
+
+  const normalized = path.replace(/\\/g, '/')
+  if (normalized.startsWith('/') || normalized.includes('..'))
+    return false
+
+  const segments = normalized.split('/')
+  return segments.every(segment => segment.length > 0 && segment !== '.')
+}
+
+function getToolContentPath(slug: string, toolsData: ToolsJson = getToolsJson()): string {
+  const item = toolsData.list.find(entry => entry.slug === slug)
+  const contentPath = item?.path ?? slug
+  return isSafeContentPath(contentPath) ? contentPath : slug
+}
+
 function replaceLinkPlaceholders(content: string): string {
   const segments = content.split(/(```[\s\S]*?```)/g)
   return segments
@@ -167,16 +182,17 @@ function rewriteInternalLinks(html: string, locale: Locale): string {
   })
 }
 
-export function resolveToolLogo(slug: string, logo?: string): { type: 'icon', name: string } | { type: 'svg', content: string } | { type: 'none' } {
+export function resolveToolLogo(slug: string, logo?: string, toolsData?: ToolsJson): { type: 'icon', name: string } | { type: 'svg', content: string } | { type: 'none' } {
   if (!logo)
     return { type: 'none' }
-  if (!isValidSlug(slug) || (logo.includes('.') && !isValidSlug(logo.replace('.svg', '')))) {
+  const contentPath = getToolContentPath(slug, toolsData)
+  if (!isSafeContentPath(contentPath) || (logo.includes('.') && !isValidSlug(logo.replace('.svg', '')))) {
     return { type: 'none' }
   }
 
   if (logo.includes('.')) {
     try {
-      const logoPath = resolve(CONTENT_ROOT, slug, logo)
+      const logoPath = resolve(CONTENT_ROOT, contentPath, logo)
       if (!logoPath.startsWith(resolve(CONTENT_ROOT)))
         return { type: 'none' }
       const content = readFileSync(logoPath, 'utf-8')
@@ -194,13 +210,6 @@ export function getToolTags(toolsData: ToolsJson, tagKeys: string[], locale: Loc
     const tag = toolsData.tags.find(item => item.key === key)
     return { key, label: tag ? txt(tag, locale) : key }
   })
-}
-
-export function getToolBadge(toolsData: ToolsJson, category: string, locale: Locale): string {
-  const categoryItem = toolsData.categories.find(item => item.key === category)
-  if (!categoryItem)
-    return category
-  return txt(categoryItem.badge, locale)
 }
 
 export async function renderMarkdown(content: string, locale?: Locale): Promise<string> {
@@ -240,12 +249,19 @@ export async function renderMarkdown(content: string, locale?: Locale): Promise<
 }
 
 export function getToolsJson(): ToolsJson {
-  return JSON.parse(readFileSync(join(CONTENT_ROOT, 'list.json'), 'utf-8'))
+  const listJson = JSON.parse(readFileSync(join(CONTENT_ROOT, 'list.json'), 'utf-8')) as ToolListJson
+  const tagsJson = JSON.parse(readFileSync(join(CONTENT_ROOT, 'tags.json'), 'utf-8')) as TagItem[]
+
+  return {
+    tags: tagsJson,
+    featured: listJson.featured,
+    list: listJson.list,
+  }
 }
 
-export function getToolMeta(slug: string): ToolMeta {
+export function getToolMeta(slug: string, toolsData?: ToolsJson): ToolMeta {
   try {
-    const metaPath = join(CONTENT_ROOT, slug, 'meta.json')
+    const metaPath = join(CONTENT_ROOT, getToolContentPath(slug, toolsData), 'meta.json')
     return JSON.parse(readFileSync(metaPath, 'utf-8'))
   } catch {
     return {
@@ -264,9 +280,9 @@ function parseDocFilename(filename: string): { locale: string | null, docSlug: s
   return { locale: null, docSlug: name }
 }
 
-export function getToolDocSlugs(slug: string): string[] {
+export function getToolDocSlugs(slug: string, toolsData?: ToolsJson): string[] {
   try {
-    const toolDir = join(CONTENT_ROOT, slug)
+    const toolDir = join(CONTENT_ROOT, getToolContentPath(slug, toolsData))
     const files = readdirSync(toolDir).filter(filename => filename.endsWith('.md'))
     const slugs = new Set<string>()
     for (const filename of files) {
@@ -278,9 +294,9 @@ export function getToolDocSlugs(slug: string): string[] {
   }
 }
 
-export async function getToolDocs(slug: string, locale?: Locale): Promise<ToolDoc[]> {
+export async function getToolDocs(slug: string, locale?: Locale, toolsData?: ToolsJson): Promise<ToolDoc[]> {
   let files: string[]
-  const toolDir = join(CONTENT_ROOT, slug)
+  const toolDir = join(CONTENT_ROOT, getToolContentPath(slug, toolsData))
 
   try {
     files = readdirSync(toolDir).filter(filename => filename.endsWith('.md'))
@@ -312,12 +328,13 @@ export async function getToolDocs(slug: string, locale?: Locale): Promise<ToolDo
   )
 }
 
-export async function getToolDoc(toolSlug: string, docSlug: string, locale?: Locale) {
+export async function getToolDoc(toolSlug: string, docSlug: string, locale?: Locale, toolsData?: ToolsJson) {
   const candidates = locale ? [`${locale}.${docSlug}.md`, `${docSlug}.md`] : [`${docSlug}.md`]
+  const contentPath = getToolContentPath(toolSlug, toolsData)
 
   for (const filename of candidates) {
     try {
-      const docPath = join(CONTENT_ROOT, toolSlug, filename)
+      const docPath = join(CONTENT_ROOT, contentPath, filename)
       const raw = readFileSync(docPath, 'utf-8')
       const { data, content } = matter(raw)
       return {
