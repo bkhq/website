@@ -15,14 +15,8 @@ export const zh: Translations = {
     subtitle: '发现现代开发者的工具，更快发布产品。',
     searchPlaceholder: '搜索...',
   },
-  categories: {
+  filters: {
     all: '全部',
-    images: '图片',
-    textCode: '文本 & 代码',
-    colors: '颜色',
-    converters: '转换器',
-    devTools: '开发工具',
-    containers: '容器',
   },
   card: {
     view: '查看',

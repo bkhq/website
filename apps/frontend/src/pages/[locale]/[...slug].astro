@@ -9,7 +9,7 @@ export function getStaticPaths() {
   for (const item of toolsData.list) {
     paths.push({ params: { locale: 'zh', slug: item.slug } })
 
-    const docSlugs = getToolDocSlugs(item.slug)
+    const docSlugs = getToolDocSlugs(item.slug, toolsData)
     for (const docSlug of docSlugs) {
       if (docSlug !== 'index') {
         paths.push({ params: { locale: 'zh', slug: `${item.slug}/${docSlug}` } })

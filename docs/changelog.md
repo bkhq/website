@@ -27,3 +27,18 @@ Kept the Worker entry on TypeScript source because local development and Wrangle
 Changed frontend routing to use English as the default no-prefix path and Chinese under `/zh/*`.
 Moved system pages to `/sys/*` and tag pages to `/tags/*`, while keeping `/api/*` reserved.
 Updated locale switching, internal link localization, canonical and alternate tags, and Worker redirects for legacy `/en/*` and `/tag/*` paths.
+
+## 2026-03-09 20:27 [decision]
+
+Removed the `category` concept from content and frontend routing.
+Moved former category semantics into `tags`, deleted `/category/*` page generation, and updated directory/detail UI to use tags only.
+
+## 2026-03-09 20:30 [decision]
+
+Removed the `demo` tool from the content registry and deleted the `content/demo/` directory.
+Static generation no longer produces `/demo/*` or `/zh/demo/*` pages.
+
+## 2026-03-09 20:50 [decision]
+
+Added optional `path` mapping for tool content directories while keeping URL `slug` unchanged.
+Migrated `zzci-chrome` and `zzci-traefik` to nested `content/zzci/...` directories and updated content loading to resolve files by `path`.

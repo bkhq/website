@@ -3,7 +3,6 @@ import type { Locale } from '@/i18n'
 import { getTranslations } from '@/i18n'
 import Base from '@/layouts/Base.astro'
 import {
-  getToolBadge,
   getToolDoc,
   getToolDocs,
   getToolMeta,
@@ -24,7 +23,6 @@ type RelatedToolCard = {
   href: string
   title: string
   description: string
-  badge: string
   logo: ReturnType<typeof resolveToolLogo>
 }
 
@@ -36,13 +34,12 @@ const docSlug = parts[1] || 'index'
 const t = getTranslations(locale)
 const toolsData = getToolsJson()
 const toolEntry = toolsData.list.find(item => item.slug === toolSlug)
-const categoryLabel = toolEntry ? getToolBadge(toolsData, toolEntry.category, locale) : ''
 const toolTags = toolEntry ? getToolTags(toolsData, toolEntry.tags ?? [], locale) : []
 
-const meta = getToolMeta(toolSlug)
-const { data: frontmatter, html: htmlContent } = await getToolDoc(toolSlug, docSlug, locale)
+const meta = getToolMeta(toolSlug, toolsData)
+const { data: frontmatter, html: htmlContent } = await getToolDoc(toolSlug, docSlug, locale, toolsData)
 
-const allDocs = await getToolDocs(toolSlug, locale)
+const allDocs = await getToolDocs(toolSlug, locale, toolsData)
 const sidebarDocs = allDocs
   .map(doc => ({
     slug: doc.slug,
@@ -80,14 +77,13 @@ const linkedTools: RelatedToolCard[] = (meta.link ?? [])
     if (!relatedEntry)
 return null
 
-    const relatedMeta = getToolMeta(relatedSlug)
+    const relatedMeta = getToolMeta(relatedSlug, toolsData)
     return {
       slug: relatedSlug,
       href: localizePath(locale, `/${relatedSlug}`),
       title: txt(relatedMeta.title, locale),
       description: txt(relatedMeta.description, locale),
-      badge: getToolBadge(toolsData, relatedEntry.category, locale),
-      logo: resolveToolLogo(relatedSlug, relatedEntry.logo),
+      logo: resolveToolLogo(relatedSlug, relatedEntry.logo, toolsData),
     }
   })
   .filter((item): item is RelatedToolCard => item !== null)
@@ -101,9 +97,6 @@ return null
           {txt(meta.title, locale)}
         </h1>
         <div class="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-          {categoryLabel && toolEntry && (
-            <a href={localizePath(locale, `/category/${toolEntry.category}`)} class="rounded-full bg-foreground/5 px-2.5 py-0.5 font-medium text-foreground/70 transition-colors hover:bg-foreground/10 hover:text-foreground">{categoryLabel}</a>
-          )}
           {toolTags.map(tag => (
             <a href={localizePath(locale, `/tags/${tag.key}`)} class="rounded-full border border-border/40 px-2.5 py-0.5 font-medium text-foreground/50 transition-colors hover:border-border hover:text-foreground">{tag.label}</a>
           ))}
@@ -156,34 +149,6 @@ return null
         )}
       </div>
 
-      {linkedTools.length > 0 && (
-        <div class="mb-8 rounded-2xl border border-border/50 bg-white/80 p-4 shadow-sm dark:bg-white/[0.03] sm:p-5">
-          <div class="mb-3 text-sm font-semibold text-foreground">{t.toolDetail.link}</div>
-          <div class="grid gap-3 sm:grid-cols-2">
-            {linkedTools.map(item => (
-              <a href={item.href} class="rounded-xl border border-border/50 bg-background/60 p-4 transition-colors hover:border-border hover:bg-background">
-                <div class="flex items-start gap-3">
-                  <div class="flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-foreground/5 text-sm font-semibold text-foreground/70">
-                    {item.logo.type === 'svg' ?
-(
-                      <span class="h-6 w-6" set:html={item.logo.content} />
-                    ) :
-(
-                      <span>{item.title.charAt(0).toUpperCase()}</span>
-                    )}
-                  </div>
-                  <div class="min-w-0">
-                    <div class="inline-flex rounded-full bg-foreground/5 px-2 py-0.5 text-xs font-medium text-foreground/70">{item.badge}</div>
-                    <div class="mt-2 text-sm font-semibold text-foreground">{item.title}</div>
-                    <p class="mt-1 text-sm leading-6 text-muted-foreground">{item.description}</p>
-                  </div>
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
-
       <div class="flex items-center justify-center gap-1.5 py-5">
         <span class="h-1 w-1 rounded-full bg-border"></span>
         <span class="h-1 w-1 rounded-full bg-border"></span>
@@ -227,6 +192,33 @@ return null
           )}
 
           <article class="prose-article rounded-xl bg-white p-6 shadow-sm dark:bg-white/[0.03] sm:p-8" set:html={htmlContent} />
+
+          {linkedTools.length > 0 && (
+            <div class="mt-8 rounded-2xl border border-border/50 bg-white/80 p-4 shadow-sm dark:bg-white/[0.03] sm:p-5">
+              <div class="mb-3 text-sm font-semibold text-foreground">{t.toolDetail.link}</div>
+              <div class="grid gap-3 sm:grid-cols-2">
+                {linkedTools.map(item => (
+                  <a href={item.href} class="rounded-xl border border-border/50 bg-background/60 p-4 transition-colors hover:border-border hover:bg-background">
+                    <div class="flex items-start gap-3">
+                      <div class="flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-foreground/5 text-sm font-semibold text-foreground/70">
+                        {item.logo.type === 'svg' ?
+(
+                          <span class="h-6 w-6" set:html={item.logo.content} />
+                        ) :
+(
+                          <span>{item.title.charAt(0).toUpperCase()}</span>
+                        )}
+                      </div>
+                      <div class="min-w-0">
+                        <div class="text-sm font-semibold text-foreground">{item.title}</div>
+                        <p class="mt-1 text-sm leading-6 text-muted-foreground">{item.description}</p>
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
