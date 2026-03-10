@@ -3,15 +3,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { getTranslations } from '@/i18n'
 
 type ThemeMode = 'light' | 'dark' | 'system'
-type ResolvedTheme = 'light' | 'dark'
 
 const STORAGE_KEY = 'bkio-theme'
-
-function getSystemTheme(): ResolvedTheme {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ?
-    'dark' :
-    'light'
-}
 
 const themeOrder: ThemeMode[] = ['dark', 'light', 'system']
 
