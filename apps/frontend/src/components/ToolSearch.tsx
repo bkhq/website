@@ -13,7 +13,6 @@ import {
   Tag,
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import type { Locale } from '@/i18n'
@@ -50,7 +49,9 @@ interface Props {
   locale: Locale
   tools: ToolItem[]
   allTags: ToolTag[]
+  visibleTags?: ToolTag[]
   initialTag?: string
+  allPath?: string
   translations: {
     searchPlaceholder: string
     all: string
@@ -66,7 +67,7 @@ interface Props {
   }
 }
 
-export function ToolSearch({ locale, tools, allTags, initialTag, translations }: Props) {
+export function ToolSearch({ locale, tools, allTags, visibleTags, initialTag, allPath = '/', translations }: Props) {
   const [query, setQuery] = useState('')
   const [page, setPage] = useState(1)
   const [activeTag, setActiveTag] = useState(initialTag ?? '')
@@ -112,7 +113,7 @@ export function ToolSearch({ locale, tools, allTags, initialTag, translations }:
     if (newTag) {
       window.history.replaceState(null, '', localizePath(locale, `/tags/${newTag}`))
     } else {
-      window.history.replaceState(null, '', localizePath(locale, '/'))
+      window.history.replaceState(null, '', localizePath(locale, allPath))
     }
   }
 
@@ -131,26 +132,21 @@ export function ToolSearch({ locale, tools, allTags, initialTag, translations }:
 
       {allTags.length > 0 && (
         <div className="mt-8 flex flex-wrap items-center justify-center gap-1.5 text-sm">
-          <Button
-            size="default"
-            variant={activeTag === '' ? 'default' : 'outline'}
-            className="rounded-full px-3"
-            onClick={() => handleTagChange('')}
-          >
-            <span className="text-[13px]">{translations.all}</span>
-            <Badge
-              variant={activeTag === '' ? 'secondary' : 'outline'}
-              className={cn(
-                'min-w-5 justify-center px-1.5 py-0 text-[10px]',
-                activeTag === '' &&
-                'border-transparent bg-white/15 text-white dark:bg-white/10',
-              )}
-            >
-              {tools.length}
-            </Badge>
-          </Button>
           <Tag className="h-3.5 w-3.5 text-muted-foreground/50" />
-          {allTags.map((tag) => {
+          <button
+            type="button"
+            onClick={() => handleTagChange('')}
+            className={cn(
+              'inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs transition-colors',
+              activeTag === '' ?
+                'border-foreground/20 bg-foreground/10 text-foreground' :
+                'border-border/40 text-muted-foreground hover:border-border hover:text-foreground',
+            )}
+          >
+            {translations.all}
+            <span className="text-[10px] opacity-60">{tools.length}</span>
+          </button>
+          {(visibleTags ?? allTags).map((tag) => {
             const count = tagCounts.get(tag.key) ?? 0
             if (count === 0)
               return null

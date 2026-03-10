@@ -16,6 +16,8 @@ interface Props {
   metaTitle?: string
   metaDescription?: string
   initialTag?: string
+  allPath?: string
+  maxVisibleTags?: number
   detectLocale?: boolean
 }
 
@@ -24,6 +26,8 @@ const {
   metaTitle,
   metaDescription,
   initialTag,
+  allPath = '/',
+  maxVisibleTags,
   detectLocale = false,
 } = Astro.props
 
@@ -52,6 +56,25 @@ const allTags = toolsData.tags.map(tag => ({
   key: tag.key,
   label: txt(tag, locale),
 }))
+
+const tagCounts = new Map<string, number>()
+for (const item of toolItems) {
+  for (const tag of item.tags ?? []) {
+    tagCounts.set(tag.key, (tagCounts.get(tag.key) ?? 0) + 1)
+  }
+}
+
+const visibleTags = maxVisibleTags
+  ? allTags
+      .filter(tag => (tagCounts.get(tag.key) ?? 0) > 0)
+      .sort((a, b) => {
+        const diff = (tagCounts.get(b.key) ?? 0) - (tagCounts.get(a.key) ?? 0)
+        if (diff !== 0)
+          return diff
+        return allTags.findIndex(item => item.key === a.key) - allTags.findIndex(item => item.key === b.key)
+      })
+      .slice(0, maxVisibleTags)
+  : allTags
 ---
 
 <Base
@@ -75,7 +98,9 @@ const allTags = toolsData.tags.map(tag => ({
         locale={locale}
         tools={toolItems}
         allTags={allTags}
+        visibleTags={visibleTags}
         initialTag={initialTag}
+        allPath={allPath}
         translations={{
           searchPlaceholder: t.hero.searchPlaceholder,
           all: t.filters.all,

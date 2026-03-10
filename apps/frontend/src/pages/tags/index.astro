@@ -1,0 +1,48 @@
+---
+import { getTranslations } from '@/i18n'
+import Base from '@/layouts/Base.astro'
+import { getToolsJson, txt } from '@/lib/content'
+import { localizePath } from '@/lib/routes'
+
+const locale = 'en' as const
+const t = getTranslations(locale)
+const toolsData = getToolsJson()
+
+const tagCounts = new Map<string, number>()
+for (const item of toolsData.list) {
+  for (const tagKey of item.tags ?? []) {
+    tagCounts.set(tagKey, (tagCounts.get(tagKey) ?? 0) + 1)
+  }
+}
+
+const tags = toolsData.tags.map(tag => ({
+  key: tag.key,
+  label: txt(tag, locale),
+  count: tagCounts.get(tag.key) ?? 0,
+}))
+---
+
+<Base title={`${t.card.tags} - ${t.hero.title}`} description={t.hero.subtitle} locale={locale}>
+  <section class="relative z-10">
+    <div class="mx-auto w-full max-w-5xl px-4 pb-12 pt-8 sm:px-6 sm:pt-10 lg:px-8">
+      <div class="text-center">
+        <h1 class="text-4xl font-semibold tracking-[-0.05em] text-foreground sm:text-5xl">{t.card.tags}</h1>
+        <p class="mx-auto mt-3 max-w-2xl text-[15px] leading-6 text-muted-foreground sm:text-base">
+          {t.hero.subtitle}
+        </p>
+      </div>
+
+      <div class="mt-8 flex flex-wrap justify-center gap-2">
+        {tags.map(tag => (
+          <a
+            href={localizePath(locale, `/tags/${tag.key}`)}
+            class="inline-flex items-center gap-1 rounded-full border border-border/40 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:border-border hover:text-foreground"
+          >
+            {tag.label}
+            <span class="text-xs opacity-60">{tag.count}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

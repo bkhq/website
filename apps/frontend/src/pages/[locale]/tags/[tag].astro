@@ -18,4 +18,4 @@ const tagObj = toolsData.tags.find(item => item.key === tagKey)
 const tagLabel = tagObj ? txt(tagObj, locale) : tagKey
 ---
 
-<ToolDirectoryPage locale={locale} metaTitle={`${tagLabel} - ${t.hero.title}`} initialTag={tagKey} />
+<ToolDirectoryPage locale={locale} metaTitle={`${tagLabel} - ${t.hero.title}`} initialTag={tagKey} allPath="/tags" />
