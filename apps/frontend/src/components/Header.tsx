@@ -1,15 +1,11 @@
 import { Github } from 'lucide-react'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { getTranslations } from '@/i18n'
 import { localizePath } from '@/lib/routes'
 
-const translations = {
-  en: { submit: 'Submit' },
-  zh: { submit: '投稿' },
-} as const
-
 export function Header({ locale }: { locale: 'en' | 'zh' }) {
-  const t = translations[locale]
+  const t = getTranslations(locale)
 
   return (
     <header className="relative z-10">
@@ -19,6 +15,12 @@ export function Header({ locale }: { locale: 'en' | 'zh' }) {
         </a>
 
         <div className="flex items-center gap-2 text-sm">
+          <a
+            href={localizePath(locale, '/tags')}
+            className="inline-flex h-8 items-center justify-center rounded-lg px-2.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            {t.card.tags}
+          </a>
           <a
             href="https://github.com/bkhq/website"
             target="_blank"
@@ -34,7 +36,7 @@ export function Header({ locale }: { locale: 'en' | 'zh' }) {
             href={localizePath(locale, '/sys/submit')}
             className="inline-flex h-8 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-input bg-background px-3 text-sm font-medium shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground"
           >
-            {t.submit}
+            {t.nav.submit}
           </a>
         </div>
       </div>

@@ -12,12 +12,13 @@ interface Props {
 
 const { locale, title, description, content } = Astro.props
 const htmlContent = await renderMarkdown(content, locale)
+const dividerLabel = locale === 'zh' ? '内容' : 'Content'
 ---
 
 <Base title={title} description={description} locale={locale}>
   <section class="relative z-10">
-    <div class="mx-auto w-full max-w-5xl px-4 pb-14 pt-8 sm:px-6 sm:pt-10 lg:px-8">
-      <div class="pb-8 text-center">
+    <div class="mx-auto w-full max-w-5xl px-4 pb-8 pt-8 sm:px-6 sm:pt-10 lg:px-8">
+      <div class="pb-5 text-center">
         <h1 class="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
           {title}
         </h1>
@@ -31,8 +32,16 @@ const htmlContent = await renderMarkdown(content, locale)
         </div>
       </div>
 
+      <div class="mx-auto mb-5 flex w-full max-w-[75ch] items-center gap-3 px-1">
+        <span class="h-px flex-1 bg-gradient-to-r from-transparent via-border to-border/70"></span>
+        <span class="rounded-full border border-border/50 bg-background/80 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground/75">
+          {dividerLabel}
+        </span>
+        <span class="h-px flex-1 bg-gradient-to-l from-transparent via-border to-border/70"></span>
+      </div>
+
       <div class="flex items-start justify-center">
-        <article class="prose-article rounded-xl bg-white p-6 shadow-sm dark:bg-white/[0.03] sm:p-8" set:html={htmlContent} />
+        <article class="prose-article prose-article-narrow rounded-xl bg-white p-6 shadow-sm dark:bg-white/[0.03] sm:p-8" set:html={htmlContent} />
       </div>
     </div>
   </section>

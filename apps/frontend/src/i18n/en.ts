@@ -38,6 +38,7 @@ export const en: Translations = {
   theme: {
     light: 'Light',
     dark: 'Dark',
+    system: 'System',
   },
   toolDetail: {
     configuration: 'Configuration',

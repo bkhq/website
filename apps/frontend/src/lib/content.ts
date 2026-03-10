@@ -110,6 +110,10 @@ function sanitizeSvg(svg: string): string {
   return cleaned
 }
 
+function wrapTables(html: string): string {
+  return html.replace(/<table>([\s\S]*?)<\/table>/g, '<div class="table-wrap"><table>$1</table></div>')
+}
+
 function isValidSlug(slug: string): boolean {
   return !slug.includes('..') && !slug.includes('\0') && !/[/\\]/.test(slug)
 }
@@ -245,7 +249,8 @@ export async function renderMarkdown(content: string, locale?: Locale): Promise<
 
   const raw = await (marked.parse(prepared) as Promise<string> | string)
   const sanitized = sanitizeHtml(raw as string)
-  return locale ? rewriteInternalLinks(sanitized, locale) : sanitized
+  const wrappedTables = wrapTables(sanitized)
+  return locale ? rewriteInternalLinks(wrappedTables, locale) : wrappedTables
 }
 
 export function getToolsJson(): ToolsJson {

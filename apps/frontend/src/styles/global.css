@@ -128,11 +128,16 @@
 /* ─── Article prose (outside @layer for higher specificity) ─── */
 
 .prose-article {
-  width: 75ch;
-  max-width: 100%;
+  width: 100%;
+  max-width: none;
   font-size: 15px;
   line-height: 1.8;
   color: var(--foreground);
+}
+
+.prose-article-narrow {
+  width: 75ch;
+  max-width: 100%;
 }
 
 .prose-article h1,
@@ -337,15 +342,22 @@
 }
 
 /* Tables — wrapped for horizontal scroll on mobile */
-.prose-article table {
-  display: block;
+.prose-article .table-wrap {
   width: 100%;
   margin-bottom: 1.5rem;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+.prose-article table {
+  width: 100%;
+  min-width: max-content;
   font-size: 13.5px;
   border: 1px solid var(--border);
   border-radius: 0.5rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: color-mix(in srgb, var(--background) 92%, transparent);
 }
 
 .prose-article thead {

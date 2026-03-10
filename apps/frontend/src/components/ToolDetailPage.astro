@@ -91,8 +91,8 @@ return null
 
 <Base title={`${txt(meta.title, locale)} - ${pageTitle}`} description={txt(meta.description, locale)} locale={locale}>
   <section class="relative z-10">
-    <div class="mx-auto w-full max-w-5xl px-4 pb-14 pt-8 sm:px-6 sm:pt-10 lg:px-8">
-      <div class="pb-8 text-center">
+    <div class="mx-auto w-full max-w-5xl px-4 pb-8 pt-8 sm:px-6 sm:pt-10 lg:px-8">
+      <div class="pb-4 text-center">
         <h1 class="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
           {txt(meta.title, locale)}
         </h1>
@@ -149,16 +149,16 @@ return null
         )}
       </div>
 
-      <div class="flex items-center justify-center gap-1.5 py-5">
+      <div class="flex items-center justify-center gap-1.5 py-3">
         <span class="h-1 w-1 rounded-full bg-border"></span>
         <span class="h-1 w-1 rounded-full bg-border"></span>
         <span class="h-1 w-1 rounded-full bg-border"></span>
       </div>
 
-      <div class="mt-6 flex items-start justify-center">
+      <div class="mt-2 flex items-start justify-center">
         {sidebarDocs.length > 1 && (
           <aside class="hidden w-[140px] flex-none self-stretch lg:block">
-            <nav class="sticky top-28 space-y-0.5 border-r border-border/40 pr-4 text-sm">
+            <nav class="sticky top-28 space-y-0.5 pr-4 text-sm">
               {sidebarDocs.map(doc => (
                 <a
                   href={doc.href}
@@ -174,7 +174,7 @@ return null
           </aside>
         )}
 
-        <div class:list={[sidebarDocs.length > 1 && 'min-w-0 lg:pl-5']}>
+        <div class:list={['w-full min-w-0', sidebarDocs.length > 1 && 'lg:flex-1 lg:pl-5']}>
           {sidebarDocs.length > 1 && (
             <nav class="mb-8 flex flex-wrap gap-1.5 lg:hidden">
               {sidebarDocs.map(doc => (
@@ -211,7 +211,7 @@ return null
                       </div>
                       <div class="min-w-0">
                         <div class="text-sm font-semibold text-foreground">{item.title}</div>
-                        <p class="mt-1 text-sm leading-6 text-muted-foreground">{item.description}</p>
+                        <p class="mt-1 line-clamp-2 text-[13px] leading-relaxed text-muted-foreground">{item.description}</p>
                       </div>
                     </div>
                   </a>

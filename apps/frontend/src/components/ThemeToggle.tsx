@@ -1,80 +1,62 @@
-import { Check, Moon, Sun } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { Moon, Sun, SunMoon } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { getTranslations } from '@/i18n'
 
-type Theme = 'light' | 'dark'
+type ThemeMode = 'light' | 'dark' | 'system'
 
 const STORAGE_KEY = 'bkio-theme'
 
-function getSystemTheme(): Theme {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ?
-    'dark' :
-    'light'
-}
-
-const themeOptions: {
-  value: Theme
-  icon: typeof Sun
-  en: string
-  zh: string
-}[] = [
-  { value: 'light', icon: Sun, en: 'Light', zh: '浅色' },
-  { value: 'dark', icon: Moon, en: 'Dark', zh: '深色' },
-]
+const themeOrder: ThemeMode[] = ['dark', 'light', 'system']
 
 export function ThemeToggle({ locale }: { locale: 'en' | 'zh' }) {
-  const [theme, setThemeState] = useState<Theme>(() => {
-    if (typeof window === 'undefined')
-      return 'light'
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved === 'light' || saved === 'dark')
-      return saved
-    return getSystemTheme()
-  })
+  const t = getTranslations(locale)
+  const [theme, setThemeState] = useState<ThemeMode>('system')
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark')
-    localStorage.setItem(STORAGE_KEY, theme)
-  }, [theme])
-
-  const setTheme = useCallback((mode: Theme) => {
-    setThemeState(mode)
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved === 'light' || saved === 'dark' || saved === 'system')
+      setThemeState(saved)
   }, [])
 
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-color-scheme: dark)')
+    const applyTheme = () => {
+      const resolvedTheme = theme === 'system' ? (media.matches ? 'dark' : 'light') : theme
+      document.documentElement.classList.toggle('dark', resolvedTheme === 'dark')
+    }
+
+    applyTheme()
+    localStorage.setItem(STORAGE_KEY, theme)
+    media.addEventListener('change', applyTheme)
+    return () => media.removeEventListener('change', applyTheme)
+  }, [theme])
+
+  const nextTheme = useMemo(() => {
+    const index = themeOrder.indexOf(theme)
+    return themeOrder[(index + 1) % themeOrder.length]
+  }, [theme])
+
+  const currentLabel = t.theme[theme]
+  const nextLabel = t.theme[nextTheme]
+
+  const setTheme = useCallback(() => {
+    setThemeState((current) => {
+      const index = themeOrder.indexOf(current)
+      return themeOrder[(index + 1) % themeOrder.length]
+    })
+  }, [])
+
+  const Icon = theme === 'dark' ? Moon : theme === 'light' ? Sun : SunMoon
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-lg outline-none hover:bg-muted hover:text-foreground size-7"
-        aria-label="Toggle color theme"
-      >
-        {theme === 'dark' ?
-            (
-              <Moon className="h-4 w-4" />
-            ) :
-            (
-              <Sun className="h-4 w-4" />
-            )}
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        {themeOptions.map((opt) => {
-          const Icon = opt.icon
-          return (
-            <DropdownMenuItem
-              key={opt.value}
-              onClick={() => setTheme(opt.value)}
-            >
-              <Icon className="h-4 w-4" />
-              {opt[locale]}
-              {theme === opt.value && <Check className="ml-auto h-4 w-4" />}
-            </DropdownMenuItem>
-          )
-        })}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <button
+      type="button"
+      onClick={setTheme}
+      className="inline-flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-lg outline-none transition-colors hover:bg-muted hover:text-foreground"
+      aria-label={`${currentLabel} theme. Click to switch to ${nextLabel}.`}
+      title={`${currentLabel} -> ${nextLabel}`}
+    >
+      <Icon className="h-4 w-4" />
+    </button>
   )
 }

@@ -38,6 +38,7 @@ export interface Translations {
   theme: {
     light: string
     dark: string
+    system: string
   }
   toolDetail: {
     configuration: string
