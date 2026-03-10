@@ -47,3 +47,13 @@ Migrated `zzci-chrome` and `zzci-traefik` to nested `content/zzci/...` directori
 
 Split the site-wide tag dictionary out of `content/list.json` into `content/tags.json`.
 Kept the frontend data API stable by having `getToolsJson()` compose `tags.json` and `list.json` into the existing structure.
+
+## 2026-03-10 00:00 [decision]
+
+Updated BKD installation docs to call out the macOS first-run permission issue.
+Added guidance to run `xattr -cr bkd` when the downloaded binary cannot execute after `chmod +x`.
+
+## 2026-03-10 00:05 [decision]
+
+Refined the BKD macOS installation note into a dedicated required-step section.
+Changed `xattr -cr bkd` from optional troubleshooting guidance to a mandatory first-run step in both languages.

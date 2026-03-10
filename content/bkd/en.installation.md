@@ -19,7 +19,17 @@ Download the launcher binary for your platform. The launcher is a small binary (
 
 [Checksums](https://github.com/bkhq/bkd/releases/download/launcher-v1/checksums.txt) — Verify file integrity after download.
 
-Download the launcher, make it executable (`chmod +x`), and run it. Open http://localhost:3000 after starting.
+Download the launcher and make it executable with `chmod +x`.
+
+### macOS Required Step
+
+On macOS, you must clear the downloaded file attributes before the first run:
+
+```bash
+xattr -cr bkd
+```
+
+Then run the launcher and open http://localhost:3000 after starting.
 
 ## System Requirements
 

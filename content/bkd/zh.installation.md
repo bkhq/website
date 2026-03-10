@@ -19,7 +19,17 @@ order: 1
 
 [校验和](https://github.com/bkhq/bkd/releases/download/launcher-v1/checksums.txt) — 下载后验证文件完整性。
 
-下载启动器，赋予可执行权限（`chmod +x`），然后运行。启动后打开 http://localhost:3000。
+下载启动器，并先赋予可执行权限（`chmod +x`）。
+
+### macOS 必做步骤
+
+在 macOS 上，首次运行前必须先清理下载文件的扩展属性：
+
+```bash
+xattr -cr bkd
+```
+
+然后再运行启动器。启动后打开 http://localhost:3000。
 
 ## 系统要求
 
